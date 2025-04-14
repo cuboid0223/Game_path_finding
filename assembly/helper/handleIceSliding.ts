@@ -1,9 +1,4 @@
-import {
-  buildFlourMapping,
-  combineCellState,
-  getHeroDirection,
-  getPlacementAt,
-} from "..";
+import { buildFlourMapping } from "..";
 import {
   DIRECTION_DOWN,
   DIRECTION_LEFT,
@@ -33,6 +28,8 @@ import {
   IceSlidingResult,
   SolutionPathType,
 } from "../types/global";
+import { combineCellState } from "./combineCellState";
+import { getHeroDirection } from "./getHeroDirection";
 
 // 修正返回類型和函數定義的語法
 export function handleIceSliding(
@@ -247,7 +244,6 @@ function handleIceCornerBlocking(
   movingTrace: SolutionPathType
 ): SolutionPathType {
   // 從 placements 中尋找當前位置是否有冰角
-  // const icePlacement = getPlacementAt(placements, PLACEMENT_TYPE_ICE, nx, ny);
   const compositeState = combineCellState(gameMap[ny - 1][nx - 1]);
 
   if (compositeState && compositeState.get("iceCorner").booleanValue) {

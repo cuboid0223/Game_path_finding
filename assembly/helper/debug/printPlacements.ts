@@ -1,6 +1,8 @@
-import { ExtendedPlacementConfig } from "../types/global";
+import { ExtendedPlacementConfig } from "../../types/global";
 
-export function printPlacements(placements: Array<ExtendedPlacementConfig>): void {
+export function printPlacements(
+  placements: Array<ExtendedPlacementConfig>
+): void {
   console.log("Placements:");
   for (let i = 0; i < placements.length; i++) {
     let p = placements[i];

@@ -20,10 +20,8 @@ import {
   PLACEMENT_TYPE_FIRE,
   PLACEMENT_TYPE_FIRE_PICKUP,
   PLACEMENT_TYPE_FLOUR,
-  PLACEMENT_TYPE_FLYING_ENEMY,
   PLACEMENT_TYPE_GOAL,
   PLACEMENT_TYPE_GOAL_ENABLED,
-  PLACEMENT_TYPE_GROUND_ENEMY,
   PLACEMENT_TYPE_HERO,
   PLACEMENT_TYPE_HERO_SPAWN,
   PLACEMENT_TYPE_ICE,
@@ -62,150 +60,10 @@ import {
 import { handleIceSliding } from "./helper/handleIceSliding";
 import { findPlacement } from "./helper/findPlacement";
 import { findSwitchDoorAt } from "./helper/findSwitchDoorAt";
-import { debugMap } from "./helper/debugMap";
-import { print2DStringArray } from "./helper/print2DstringArray";
-import { printPlacements } from "./helper/printPlacements";
-
-function getOutputType(
-  type: string,
-  corner: string | null,
-  direction: string | null,
-  color: string | null,
-  isRaised: bool
-): string {
-  // 將OBJECT轉換成字串
-  // eg. {type: 'ICE', x: 15, y: 5, corner:"TOP_LEFT"} -> "ICE:TOP_LEFT"
-  if (!corner) corner = "";
-  if (!direction) direction = "";
-  if (!color) color = "";
-  if (type === PLACEMENT_TYPE_ICE) {
-    return corner ? `${type}:${corner}` : type;
-  } else if (type === PLACEMENT_TYPE_CONVEYOR) {
-    return direction ? `${type}:${direction}` : type;
-  } else if (type === PLACEMENT_TYPE_KEY) {
-    return color ? `${type}:${color}` : `${type}:BLUE`;
-  } else if (type === PLACEMENT_TYPE_LOCK) {
-    return color ? `${type}:${color}` : `${type}:BLUE`;
-  } else if (type === PLACEMENT_TYPE_SWITCH_DOOR) {
-    return isRaised ? `${type}_1` : `${type}_0`;
-  } else if (type === PLACEMENT_TYPE_ENEMY_LEFT_SPAWN) {
-    return "GROUND_ENEMY:LEFT";
-  } else if (type === PLACEMENT_TYPE_ENEMY_RIGHT_SPAWN) {
-    return "GROUND_ENEMY:RIGHT";
-  } else if (type === PLACEMENT_TYPE_ENEMY_UP_SPAWN) {
-    return "GROUND_ENEMY:UP";
-  } else if (type === PLACEMENT_TYPE_ENEMY_DOWN_SPAWN) {
-    return "GROUND_ENEMY:DOWN";
-  } else if (type === PLACEMENT_TYPE_ENEMY_FLYING_LEFT_SPAWN) {
-    return "FLYING_ENEMY:LEFT";
-  } else if (type === PLACEMENT_TYPE_ENEMY_FLYING_RIGHT_SPAWN) {
-    return "FLYING_ENEMY:RIGHT";
-  } else if (type === PLACEMENT_TYPE_ENEMY_FLYING_UP_SPAWN) {
-    return "FLYING_ENEMY:UP";
-  } else if (type === PLACEMENT_TYPE_ENEMY_FLYING_DOWN_SPAWN) {
-    return "FLYING_ENEMY:DOWN";
-  } else if (type === PLACEMENT_TYPE_ENEMY_ROAMING_SPAWN) {
-    return PLACEMENT_TYPE_ROAMING_ENEMY;
-  } else if (type === PLACEMENT_TYPE_CIABATTA_SPAWN) {
-    return PLACEMENT_TYPE_CIABATTA;
-  } else {
-    return type;
-  }
-}
-
-// 簡化地圖為二維矩陣，並記錄所有物件位置
-export function createMap(level: LevelState): GameMapResult {
-  const width = level.tilesWidth;
-  const height = level.tilesHeight;
-  const placements = level.placements;
-  // const gameMap = Array.from({ length: height }, () => Array(width).fill(""));
-  const gameMap = new Array<Array<string>>(height);
-
-  for (let i = 0; i < height; i++) {
-    gameMap[i] = new Array<string>(width).fill("");
-  }
-
-  for (let i = 0; i < placements.length; i++) {
-    const p = placements[i];
-    const adjustedX = p.x - 1;
-    const adjustedY = p.y - 1;
-
-    if (
-      adjustedX >= 0 &&
-      adjustedX < width &&
-      adjustedY >= 0 &&
-      adjustedY < height
-    ) {
-      const outputType = getOutputType(
-        p.type,
-        p.corner,
-        p.direction,
-        p.color,
-        p.isRaised
-      );
-
-      if (gameMap[adjustedY][adjustedX] !== "") {
-        gameMap[adjustedY][adjustedX] += `&${outputType}`;
-      } else {
-        gameMap[adjustedY][adjustedX] = outputType;
-      }
-    }
-  }
-
-  return createGameMapResult(gameMap, placements);
-}
-
-// 查找指定物件所有位置
-export function findPositions(
-  placements: ExtendedPlacementConfig[],
-  type: string
-): Array<PositionArray> {
-  let result: Array<PositionArray> = [];
-  for (let i = 0; i < placements.length; i++) {
-    if (placements[i].type === type) {
-      let pos = new StaticArray<i32>(2);
-      pos[0] = placements[i].x;
-      pos[1] = placements[i].y;
-      result.push(pos);
-    }
-  }
-  return result;
-}
-
-export function getPlacementAt(
-  placements: Array<ExtendedPlacementConfig>,
-  type: string,
-  x: i32,
-  y: i32
-): ExtendedPlacementConfig | null {
-  for (let i = 0; i < placements.length; i++) {
-    let p = placements[i];
-    if (p.x == x && p.y == y && p.type == type) {
-      return p;
-    }
-  }
-  return null;
-}
-
-export function getHeroDirection(dx: i32, dy: i32): string {
-  let entryDirection = "";
-  // 根據移動方向確定進入方向
-  if (dx > 0) {
-    // 向右移動，從左側進入
-    entryDirection = DIRECTION_RIGHT;
-  } else if (dx < 0) {
-    // 向左移動，從右側進入
-    entryDirection = DIRECTION_LEFT;
-  } else if (dy > 0) {
-    // 向下移動，從上方進入
-    entryDirection = DIRECTION_DOWN;
-  } else if (dy < 0) {
-    // 向上移動，從下方進入
-    entryDirection = DIRECTION_UP;
-  }
-
-  return entryDirection;
-}
+import { printMap } from "./helper/debug/printMap";
+import { print2DStringArray } from "./helper/debug/print2DstringArray";
+import { printPlacements } from "./helper/debug/printPlacements";
+import { combineCellState } from "./helper/combineCellState";
 
 //––––– 事前準備 –––––//
 // 為面粉建立一個 mapping：key = "x,y" ； value = index（從 0 開始）
@@ -242,16 +100,16 @@ function buildSwitchDoorMapping(
 // 將多個物品（火、水、冰、鑰匙）狀態合併成一個 bit mask
 // 預設：bit0 = firePickup, bit1 = waterPickup, bit2 = icePickup, bit3 = blueKey,bit4 = greenKey
 function buildItemMask(
-  hasFire: boolean,
-  hasWater: boolean,
-  hasIce: boolean,
+  hasFirePickup: boolean,
+  hasWaterPickup: boolean,
+  hasIcePickup: boolean,
   hasBlueKey: boolean,
   hasGreenKey: boolean
 ): i32 {
   let mask: i32 = 0;
-  if (hasFire) mask |= 1;
-  if (hasWater) mask |= 2;
-  if (hasIce) mask |= 4;
+  if (hasFirePickup) mask |= 1;
+  if (hasWaterPickup) mask |= 2;
+  if (hasIcePickup) mask |= 4;
   if (hasBlueKey) mask |= 8;
   if (hasGreenKey) mask |= 16;
   return mask;
@@ -261,150 +119,6 @@ function buildItemMask(
 function toggleSwitchDoorMask(doorMask: i32, totalDoors: i32): i32 {
   // 反轉所有位元，再與 ((1 << totalDoors) - 1) 相與（只保留 totalDoors 個 bit）
   return ~doorMask & ((1 << totalDoors) - 1);
-}
-
-export function combineCellState(cell: string): Map<string, CellState> {
-  // 同一個位置可能有兩個物件透過 "&" 區隔
-  // eg. ICE&FLOUR 或是 ICE:TOP_LEFT&FIRE_PICKUP
-
-  // 拆分 cell 字串，移除空白與空值
-  const types = cell.split("&");
-  const result: StaticArray<string> = new StaticArray<string>(types.length);
-  let index = 0;
-
-  // 去除空白字符並過濾掉空字符串
-  for (let i = 0; i < types.length; i++) {
-    const trimmed = types[i].trim();
-    if (trimmed !== "") {
-      result[index] = trimmed;
-      index++;
-    }
-  }
-
-  // 創建新陣列，將結果部分返回
-  const filteredTypes = new StaticArray<string>(index);
-  for (let i = 0; i < index; i++) {
-    filteredTypes[i] = result[i];
-  }
-
-  // 創建一個 Map，將每個 placementType 對應的 boolean 和 string 資料合併進去
-  let state = new Map<string, CellState>();
-
-  // 將 booleanState 和 stringState 資料合併到 state 中
-  state.set(
-    PLACEMENT_TYPE_WALL,
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_WALL), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_WATER,
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_WATER), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_FIRE,
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_FIRE), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_ICE,
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_ICE), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_CONVEYOR,
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_CONVEYOR), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_TELEPORT,
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_TELEPORT), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_THIEF,
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_THIEF), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_SWITCH,
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_SWITCH), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_SWITCH_DOOR,
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_SWITCH_DOOR), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_LOCK + ":BLUE",
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_LOCK + ":BLUE"), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_LOCK + ":GREEN",
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_LOCK + ":GREEN"), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_KEY + ":BLUE",
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_KEY + ":BLUE"), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_KEY + ":GREEN",
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_KEY + ":GREEN"), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_WATER_PICKUP,
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_WATER_PICKUP), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_FIRE_PICKUP,
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_FIRE_PICKUP), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_ICE_PICKUP,
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_ICE_PICKUP), "")
-  );
-  state.set(
-    PLACEMENT_TYPE_FLOUR,
-    createCellState(filteredTypes.includes(PLACEMENT_TYPE_FLOUR), "")
-  );
-
-  // 為 iceCorner 和 conveyorDir 設置默認值
-  state.set("iceCorner", createCellState(false, ""));
-  state.set("conveyorDir", createCellState(false, ""));
-  // 檢查所有拆解出來的 type，若包含 ICE（可能帶有角落資訊）
-  for (let i = 0; i < filteredTypes.length; i++) {
-    const t: string = filteredTypes[i];
-    // 若 t 以 "ICE:" 開頭，則拆分出角落資訊
-    if (t.startsWith(PLACEMENT_TYPE_ICE + ":")) {
-      state.get(PLACEMENT_TYPE_ICE).booleanValue = true;
-      const parts = t.split(":");
-      if (parts.length > 1) {
-        state.get("iceCorner").booleanValue = true;
-        state.get("iceCorner").stringValue = parts[1]; // 例如 "TOP_LEFT", "TOP_RIGHT" 等
-      }
-    } else if (t === PLACEMENT_TYPE_ICE) {
-      // 普通冰
-      state.get(PLACEMENT_TYPE_ICE).booleanValue = true;
-    }
-  }
-
-  for (let i = 0; i < filteredTypes.length; i++) {
-    const t: string = filteredTypes[i];
-    // 若 t 以 "CONVEYOR:" 開頭，則拆分出方向資訊
-    if (t.startsWith(PLACEMENT_TYPE_CONVEYOR + ":")) {
-      state.get(PLACEMENT_TYPE_CONVEYOR).booleanValue = true;
-      const parts: string[] = t.split(":");
-      if (parts.length > 1) {
-        state.get("conveyorDir").booleanValue = true;
-        state.get("conveyorDir").stringValue = parts[1]; // 例如 "RIGHT", "DOWN" 等
-      }
-    } else if (t === PLACEMENT_TYPE_CONVEYOR) {
-      // 預設往右
-      state.get("conveyorDir").stringValue = "RIGHT";
-    }
-  }
-
-  for (let i = 0; i < filteredTypes.length; i++) {
-    const t: string = filteredTypes[i];
-    // 若 t 以 "SWITCH_DOOR_" 開頭，則拆分出升起資訊 "1" 或 "0"
-    if (t.startsWith(PLACEMENT_TYPE_SWITCH_DOOR + "_")) {
-      state.get(PLACEMENT_TYPE_SWITCH_DOOR).booleanValue = true;
-    }
-  }
-
-  return state;
 }
 
 //––––– 主函式 –––––//
