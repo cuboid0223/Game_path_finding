@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ESM -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/@assemblyscript/loader/index.js"></script>
+<!-- UMD -->
+<script src="https://cdn.jsdelivr.net/npm/@assemblyscript/loader/umd/index.js"></script>
+<script type="module">
+import { findSolutionPath,findSolutionPathSimple } from "./build/release.js";
+const gameMap = [
+    [
+        "ICE:TOP_LEFT",
+        "ICE",
+        "WATER",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "FLOUR",
+        "WATER",
+        "ICE:TOP_RIGHT"
+    ],
+    [
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "WALL",
+        "WATER",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "LOCK:BLUE",
+        "GOAL",
+        "ICE"
+    ],
+    [
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE&FLOUR",
+        "ICE",
+        "ICE",
+        "WALL",
+        "WATER",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE"
+    ],
+    [
+        "ICE",
+        "WALL",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE"
+    ],
+    [
+        "ICE",
+        "ICE&FLOUR",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE&KEY:BLUE",
+        "ICE",
+        "ICE",
+        "WALL",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE"
+    ],
+    [
+        "WATER",
+        "ICE",
+        "ICE",
+        "WALL",
+        "ICE",
+        "",
+        "",
+        "",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "WALL"
+    ],
+    [
+        "ICE",
+        "ICE",
+        "ICE",
+        "WATER",
+        "ICE",
+        "",
+        "HERO",
+        "",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "WATER"
+    ],
+    [
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "",
+        "",
+        "",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE"
+    ],
+    [
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "WATER",
+        "ICE",
+        "ICE",
+        "ICE"
+    ],
+    [
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "WATER",
+        "ICE",
+        "ICE",
+        "WALL",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE"
+    ],
+    [
+        "ICE",
+        "ICE",
+        "WATER",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "WATER",
+        "WALL"
+    ],
+    [
+        "ICE",
+        "ICE",
+        "ICE",
+        "WALL",
+        "ICE",
+        "ICE",
+        "ICE",
+        "WATER",
+        "ICE",
+        "WALL",
+        "ICE&FLOUR",
+        "ICE",
+        "ICE"
+    ],
+    [
+        "ICE:BOTTOM_LEFT",
+        "ICE",
+        "WALL",
+        "WATER",
+        "WATER",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE:BOTTOM_RIGHT"
+    ]
+]
+const placements = [
+    {
+        "x": 7,
+        "y": 7,
+        "type": "HERO"
+    },
+    {
+        "x": 12,
+        "y": 2,
+        "type": "GOAL"
+    },
+    {
+        "type": "LOCK",
+        "x": 11,
+        "y": 2,
+        "color": "BLUE"
+    },
+    {
+        "type": "WALL",
+        "x": 2,
+        "y": 4
+    },
+    {
+        "type": "WALL",
+        "x": 5,
+        "y": 2
+    },
+    {
+        "type": "WALL",
+        "x": 10,
+        "y": 12
+    },
+    {
+        "type": "FLOUR",
+        "x": 11,
+        "y": 1
+    },
+    {
+        "type": "WALL",
+        "x": 3,
+        "y": 13
+    },
+    {
+        "type": "WALL",
+        "x": 4,
+        "y": 6
+    },
+    {
+        "type": "WALL",
+        "x": 4,
+        "y": 12
+    },
+    {
+        "type": "WALL",
+        "x": 8,
+        "y": 3
+    },
+    {
+        "type": "WALL",
+        "x": 9,
+        "y": 5
+    },
+    {
+        "type": "WALL",
+        "x": 9,
+        "y": 10
+    },
+    {
+        "type": "WALL",
+        "x": 13,
+        "y": 6
+    },
+    {
+        "type": "WALL",
+        "x": 13,
+        "y": 11
+    },
+    {
+        "type": "WATER",
+        "x": 1,
+        "y": 6
+    },
+    {
+        "type": "WATER",
+        "x": 3,
+        "y": 1
+    },
+    {
+        "type": "WATER",
+        "x": 3,
+        "y": 11
+    },
+    {
+        "type": "WATER",
+        "x": 4,
+        "y": 7
+    },
+    {
+        "type": "WATER",
+        "x": 4,
+        "y": 13
+    },
+    {
+        "type": "WATER",
+        "x": 5,
+        "y": 13
+    },
+    {
+        "type": "WATER",
+        "x": 6,
+        "y": 2
+    },
+    {
+        "type": "WATER",
+        "x": 6,
+        "y": 10
+    },
+    {
+        "type": "WATER",
+        "x": 8,
+        "y": 12
+    },
+    {
+        "type": "WATER",
+        "x": 9,
+        "y": 3
+    },
+    {
+        "type": "WATER",
+        "x": 10,
+        "y": 9
+    },
+    {
+        "type": "WATER",
+        "x": 12,
+        "y": 1
+    },
+    {
+        "type": "WATER",
+        "x": 12,
+        "y": 11
+    },
+    {
+        "type": "WATER",
+        "x": 13,
+        "y": 7
+    },
+    {
+        "type": "ICE",
+        "x": 1,
+        "y": 1,
+        "corner": "TOP_LEFT"
+    },
+    {
+        "type": "ICE",
+        "x": 1,
+        "y": 2
+    },
+    {
+        "type": "ICE",
+        "x": 1,
+        "y": 3
+    },
+    {
+        "type": "ICE",
+        "x": 1,
+        "y": 4
+    },
+    {
+        "type": "ICE",
+        "x": 1,
+        "y": 5
+    },
+    {
+        "type": "ICE",
+        "x": 1,
+        "y": 7
+    },
+    {
+        "type": "ICE",
+        "x": 1,
+        "y": 8
+    },
+    {
+        "type": "ICE",
+        "x": 1,
+        "y": 9
+    },
+    {
+        "type": "ICE",
+        "x": 1,
+        "y": 10
+    },
+    {
+        "type": "ICE",
+        "x": 1,
+        "y": 11
+    },
+    {
+        "type": "ICE",
+        "x": 1,
+        "y": 12
+    },
+    {
+        "type": "ICE",
+        "x": 1,
+        "y": 13,
+        "corner": "BOTTOM_LEFT"
+    },
+    {
+        "type": "ICE",
+        "x": 2,
+        "y": 1
+    },
+    {
+        "type": "ICE",
+        "x": 2,
+        "y": 2
+    },
+    {
+        "type": "ICE",
+        "x": 2,
+        "y": 3
+    },
+    {
+        "type": "ICE",
+        "x": 2,
+        "y": 6
+    },
+    {
+        "type": "ICE",
+        "x": 2,
+        "y": 7
+    },
+    {
+        "type": "ICE",
+        "x": 2,
+        "y": 8
+    },
+    {
+        "type": "ICE",
+        "x": 2,
+        "y": 9
+    },
+    {
+        "type": "ICE",
+        "x": 2,
+        "y": 10
+    },
+    {
+        "type": "ICE",
+        "x": 2,
+        "y": 11
+    },
+    {
+        "type": "ICE",
+        "x": 2,
+        "y": 12
+    },
+    {
+        "type": "ICE",
+        "x": 2,
+        "y": 13
+    },
+    {
+        "type": "ICE",
+        "x": 3,
+        "y": 2
+    },
+    {
+        "type": "ICE",
+        "x": 3,
+        "y": 3
+    },
+    {
+        "type": "ICE",
+        "x": 3,
+        "y": 4
+    },
+    {
+        "type": "ICE",
+        "x": 3,
+        "y": 5
+    },
+    {
+        "type": "ICE",
+        "x": 3,
+        "y": 6
+    },
+    {
+        "type": "ICE",
+        "x": 3,
+        "y": 7
+    },
+    {
+        "type": "ICE",
+        "x": 3,
+        "y": 8
+    },
+    {
+        "type": "ICE",
+        "x": 3,
+        "y": 9
+    },
+    {
+        "type": "ICE",
+        "x": 3,
+        "y": 10
+    },
+    {
+        "type": "ICE",
+        "x": 3,
+        "y": 12
+    },
+    {
+        "type": "ICE",
+        "x": 4,
+        "y": 1
+    },
+    {
+        "type": "ICE",
+        "x": 4,
+        "y": 2
+    },
+    {
+        "type": "ICE",
+        "x": 4,
+        "y": 3
+    },
+    {
+        "type": "ICE",
+        "x": 4,
+        "y": 4
+    },
+    {
+        "type": "ICE",
+        "x": 4,
+        "y": 8
+    },
+    {
+        "type": "ICE",
+        "x": 4,
+        "y": 9
+    },
+    {
+        "type": "ICE",
+        "x": 4,
+        "y": 10
+    },
+    {
+        "type": "ICE",
+        "x": 4,
+        "y": 11
+    },
+    {
+        "type": "ICE",
+        "x": 5,
+        "y": 1
+    },
+    {
+        "type": "ICE",
+        "x": 5,
+        "y": 6
+    },
+    {
+        "type": "ICE",
+        "x": 5,
+        "y": 7
+    },
+    {
+        "type": "ICE",
+        "x": 5,
+        "y": 8
+    },
+    {
+        "type": "ICE",
+        "x": 5,
+        "y": 9
+    },
+    {
+        "type": "ICE",
+        "x": 5,
+        "y": 10
+    },
+    {
+        "type": "ICE",
+        "x": 5,
+        "y": 11
+    },
+    {
+        "type": "ICE",
+        "x": 5,
+        "y": 12
+    },
+    {
+        "type": "ICE",
+        "x": 6,
+        "y": 1
+    },
+    {
+        "type": "ICE",
+        "x": 6,
+        "y": 3
+    },
+    {
+        "type": "ICE",
+        "x": 6,
+        "y": 4
+    },
+    {
+        "type": "ICE",
+        "x": 6,
+        "y": 9
+    },
+    {
+        "type": "ICE",
+        "x": 6,
+        "y": 11
+    },
+    {
+        "type": "ICE",
+        "x": 6,
+        "y": 12
+    },
+    {
+        "type": "ICE",
+        "x": 6,
+        "y": 13
+    },
+    {
+        "type": "ICE",
+        "x": 7,
+        "y": 1
+    },
+    {
+        "type": "ICE",
+        "x": 7,
+        "y": 2
+    },
+    {
+        "type": "ICE",
+        "x": 7,
+        "y": 3
+    },
+    {
+        "type": "ICE",
+        "x": 7,
+        "y": 4
+    },
+    {
+        "type": "ICE",
+        "x": 7,
+        "y": 5
+    },
+    {
+        "type": "ICE",
+        "x": 7,
+        "y": 9
+    },
+    {
+        "type": "ICE",
+        "x": 7,
+        "y": 10
+    },
+    {
+        "type": "ICE",
+        "x": 7,
+        "y": 11
+    },
+    {
+        "type": "ICE",
+        "x": 7,
+        "y": 12
+    },
+    {
+        "type": "ICE",
+        "x": 7,
+        "y": 13
+    },
+    {
+        "type": "ICE",
+        "x": 8,
+        "y": 1
+    },
+    {
+        "type": "ICE",
+        "x": 8,
+        "y": 2
+    },
+    {
+        "type": "ICE",
+        "x": 8,
+        "y": 4
+    },
+    {
+        "type": "ICE",
+        "x": 8,
+        "y": 5
+    },
+    {
+        "type": "ICE",
+        "x": 8,
+        "y": 9
+    },
+    {
+        "type": "ICE",
+        "x": 8,
+        "y": 10
+    },
+    {
+        "type": "ICE",
+        "x": 8,
+        "y": 11
+    },
+    {
+        "type": "ICE",
+        "x": 8,
+        "y": 13
+    },
+    {
+        "type": "ICE",
+        "x": 9,
+        "y": 1
+    },
+    {
+        "type": "ICE",
+        "x": 9,
+        "y": 2
+    },
+    {
+        "type": "ICE",
+        "x": 9,
+        "y": 4
+    },
+    {
+        "type": "ICE",
+        "x": 9,
+        "y": 6
+    },
+    {
+        "type": "ICE",
+        "x": 9,
+        "y": 7
+    },
+    {
+        "type": "ICE",
+        "x": 9,
+        "y": 8
+    },
+    {
+        "type": "ICE",
+        "x": 9,
+        "y": 9
+    },
+    {
+        "type": "ICE",
+        "x": 9,
+        "y": 11
+    },
+    {
+        "type": "ICE",
+        "x": 9,
+        "y": 12
+    },
+    {
+        "type": "ICE",
+        "x": 9,
+        "y": 13
+    },
+    {
+        "type": "ICE",
+        "x": 10,
+        "y": 1
+    },
+    {
+        "type": "ICE",
+        "x": 10,
+        "y": 2
+    },
+    {
+        "type": "ICE",
+        "x": 10,
+        "y": 3
+    },
+    {
+        "type": "ICE",
+        "x": 10,
+        "y": 4
+    },
+    {
+        "type": "ICE",
+        "x": 10,
+        "y": 5
+    },
+    {
+        "type": "ICE",
+        "x": 10,
+        "y": 6
+    },
+    {
+        "type": "ICE",
+        "x": 10,
+        "y": 7
+    },
+    {
+        "type": "ICE",
+        "x": 10,
+        "y": 8
+    },
+    {
+        "type": "ICE",
+        "x": 10,
+        "y": 10
+    },
+    {
+        "type": "ICE",
+        "x": 10,
+        "y": 11
+    },
+    {
+        "type": "ICE",
+        "x": 10,
+        "y": 13
+    },
+    {
+        "type": "ICE",
+        "x": 11,
+        "y": 3
+    },
+    {
+        "type": "ICE",
+        "x": 11,
+        "y": 4
+    },
+    {
+        "type": "ICE",
+        "x": 11,
+        "y": 5
+    },
+    {
+        "type": "ICE",
+        "x": 11,
+        "y": 6
+    },
+    {
+        "type": "ICE",
+        "x": 11,
+        "y": 7
+    },
+    {
+        "type": "ICE",
+        "x": 11,
+        "y": 8
+    },
+    {
+        "type": "ICE",
+        "x": 11,
+        "y": 9
+    },
+    {
+        "type": "ICE",
+        "x": 11,
+        "y": 10
+    },
+    {
+        "type": "ICE",
+        "x": 11,
+        "y": 11
+    },
+    {
+        "type": "ICE",
+        "x": 11,
+        "y": 13
+    },
+    {
+        "type": "ICE",
+        "x": 12,
+        "y": 3
+    },
+    {
+        "type": "ICE",
+        "x": 12,
+        "y": 4
+    },
+    {
+        "type": "ICE",
+        "x": 12,
+        "y": 5
+    },
+    {
+        "type": "ICE",
+        "x": 12,
+        "y": 6
+    },
+    {
+        "type": "ICE",
+        "x": 12,
+        "y": 7
+    },
+    {
+        "type": "ICE",
+        "x": 12,
+        "y": 8
+    },
+    {
+        "type": "ICE",
+        "x": 12,
+        "y": 9
+    },
+    {
+        "type": "ICE",
+        "x": 12,
+        "y": 10
+    },
+    {
+        "type": "ICE",
+        "x": 12,
+        "y": 12
+    },
+    {
+        "type": "ICE",
+        "x": 12,
+        "y": 13
+    },
+    {
+        "type": "ICE",
+        "x": 13,
+        "y": 1,
+        "corner": "TOP_RIGHT"
+    },
+    {
+        "type": "ICE",
+        "x": 13,
+        "y": 2
+    },
+    {
+        "type": "ICE",
+        "x": 13,
+        "y": 3
+    },
+    {
+        "type": "ICE",
+        "x": 13,
+        "y": 4
+    },
+    {
+        "type": "ICE",
+        "x": 13,
+        "y": 5
+    },
+    {
+        "type": "ICE",
+        "x": 13,
+        "y": 8
+    },
+    {
+        "type": "ICE",
+        "x": 13,
+        "y": 9
+    },
+    {
+        "type": "ICE",
+        "x": 13,
+        "y": 10
+    },
+    {
+        "type": "ICE",
+        "x": 13,
+        "y": 12
+    },
+    {
+        "type": "ICE",
+        "x": 13,
+        "y": 13,
+        "corner": "BOTTOM_RIGHT"
+    },
+    {
+        "type": "ICE",
+        "x": 2,
+        "y": 5
+    },
+    {
+        "type": "FLOUR",
+        "x": 2,
+        "y": 5
+    },
+    {
+        "type": "ICE",
+        "x": 5,
+        "y": 4
+    },
+    {
+        "type": "ICE",
+        "x": 5,
+        "y": 5
+    },
+    {
+        "type": "ICE",
+        "x": 4,
+        "y": 5
+    },
+    {
+        "type": "ICE",
+        "x": 6,
+        "y": 5
+    },
+    {
+        "type": "KEY",
+        "x": 6,
+        "y": 5,
+        "color": "BLUE"
+    },
+    {
+        "type": "ICE",
+        "x": 5,
+        "y": 3
+    },
+    {
+        "type": "FLOUR",
+        "x": 5,
+        "y": 3
+    },
+    {
+        "type": "ICE",
+        "x": 11,
+        "y": 12
+    },
+    {
+        "type": "FLOUR",
+        "x": 11,
+        "y": 12
+    }
+]
+const encodedMap = gameMap.map(row => row.join(",")).join("|");
+const encodedPlacements = placements.map(p => {
+  // 基本字段
+  let parts = [p.x, p.y, p.type];
+  
+  // 添加可选字段
+  if (p.direction) parts.push(p.direction);
+  else parts.push("");
+  
+  if (p.isRaised !== undefined) parts.push(String(p.isRaised));
+  else parts.push("");
+  
+  if (p.color) parts.push(p.color);
+  // 其他字段根据需要添加...
+  
+  return parts.join(",");
+}).join("|");
+
+// 调用函数
+try {
+  const width = gameMap[0].length;
+  const height = gameMap.length;
+  const solution = findSolutionPathSimple(encodedMap, width, height, encodedPlacements);
+  
+  console.log("找到解决方案:", solution);
+} catch (error) {
+  console.error("调用失败:", error);
+  // 添加调试信息
+  console.log("编码后的地图:", encodedMap);
+  console.log("编码后的放置数据:", encodedPlacements);
+}
+
+
+
+</script>
+</head>
+<body></body>
+</html>
