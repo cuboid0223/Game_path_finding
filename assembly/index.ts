@@ -209,7 +209,6 @@ export function getHeroDirection(dx: i32, dy: i32): string {
 
 //––––– 事前準備 –––––//
 // 為面粉建立一個 mapping：key = "x,y" ； value = index（從 0 開始）
-// 假設 placements 中面粉數量不多
 export function buildFlourMapping(
   placements: ExtendedPlacementConfig[]
 ): FlourMapResult {
@@ -372,7 +371,7 @@ export function combineCellState(cell: string): Map<string, CellState> {
       state.get(PLACEMENT_TYPE_ICE).booleanValue = true;
       const parts = t.split(":");
       if (parts.length > 1) {
-        state.get("iceCorner").booleanValue = true
+        state.get("iceCorner").booleanValue = true;
         state.get("iceCorner").stringValue = parts[1]; // 例如 "TOP_LEFT", "TOP_RIGHT" 等
       }
     } else if (t === PLACEMENT_TYPE_ICE) {
@@ -388,7 +387,7 @@ export function combineCellState(cell: string): Map<string, CellState> {
       state.get(PLACEMENT_TYPE_CONVEYOR).booleanValue = true;
       const parts: string[] = t.split(":");
       if (parts.length > 1) {
-        state.get("conveyorDir").booleanValue = true
+        state.get("conveyorDir").booleanValue = true;
         state.get("conveyorDir").stringValue = parts[1]; // 例如 "RIGHT", "DOWN" 等
       }
     } else if (t === PLACEMENT_TYPE_CONVEYOR) {
@@ -397,6 +396,13 @@ export function combineCellState(cell: string): Map<string, CellState> {
     }
   }
 
+  for (let i = 0; i < filteredTypes.length; i++) {
+    const t: string = filteredTypes[i];
+    // 若 t 以 "SWITCH_DOOR_" 開頭，則拆分出升起資訊 "1" 或 "0"
+    if (t.startsWith(PLACEMENT_TYPE_SWITCH_DOOR + "_")) {
+      state.get(PLACEMENT_TYPE_SWITCH_DOOR).booleanValue = true;
+    }
+  }
 
   return state;
 }
@@ -430,7 +436,7 @@ export default function findSolutionPath(
     return [];
   }
 
-  // 事前準備：面粉 mapping 與 switch door mapping
+  // 事前準備：FLOUR mapping 與 switch door mapping
   const flourResult = buildFlourMapping(placements);
   const flourMap = flourResult.flourMap;
   const totalFlours: i32 = flourResult.totalFlours;
@@ -512,7 +518,7 @@ export default function findSolutionPath(
       y === goalPosition.y
     ) {
       // console.log("收集全部面粉並抵達目標，成功！");
-      console.log(`${newPath}`);
+      // console.log(`${newPath}`);
       return newPath;
     }
 
@@ -526,10 +532,8 @@ export default function findSolutionPath(
       if (nx < 1 || nx > width || ny < 1 || ny > height) continue;
       let cell = gameMap[ny - 1][nx - 1];
       let compositeState = combineCellState(cell);
-      debugMap(compositeState, PLACEMENT_TYPES);
-      // console.log(`${compositeState.toString()}`)
-      // console.log(`${compositeState.values().toString()}`)
-      // console.log(`${compositeState.keys().toString()}`)
+      // debug use
+      // debugMap(compositeState, PLACEMENT_TYPES);
       // 先備份各狀態
       let newFlourMask: i32 = flourMask;
       let newItemMask: i32 = itemMask;
@@ -567,8 +571,6 @@ export default function findSolutionPath(
           doorMap,
           doorMask,
           flourMask
-          // compositeState.iceCorner
-          // compositeState.get(PLACEMENT_TYPE_ICE).stringValue
         );
 
         if (!iceResult.valid) {
@@ -578,16 +580,10 @@ export default function findSolutionPath(
         newItemMask = iceResult.itemMask;
         newFlourMask = iceResult.flourMask;
 
-        // console.log(iceResult.path);
-      
-        console.log(`[${iceResult.path.length}]`)
-        if(!iceResult.path.length) continue
+        if (!iceResult.path.length) continue;
         // 更新位置為最後滑行的位置
         nx = iceResult.path[iceResult.path.length - 1][0];
         ny = iceResult.path[iceResult.path.length - 1][1];
-        console.log(`[${nx}, ${ny}]`)
-        console.log(gameMap[ny - 1][nx - 1])
-
         compositeState = combineCellState(gameMap[ny - 1][nx - 1]);
       }
 
@@ -696,19 +692,12 @@ export default function findSolutionPath(
         newItemMask.toString(10) +
         "," +
         newDoorMask.toString(10);
-      // const stateKey: string = `${nx},${ny},${newFlourMask},${newItemMask},${newDoorMask}`;
 
       if (visited.has(stateKey)) continue;
       visited.add(stateKey);
 
       const newG = g + 1;
-      const newH = heuristicOptimized(
-        nx,
-        ny,
-        flourMap,
-        totalFlours,
-        goalPosition
-      );
+      const newH = heuristicOptimized(nx, ny, flourMap, goalPosition);
       queue.push(
         new QueueItem(
           newG + newH,
@@ -729,12 +718,10 @@ export default function findSolutionPath(
   return [];
 }
 
-// 改進版啟發函數：用 Manhattan 距離估算，這裡可依需要改成 MST 等更精準估算
 export function heuristicOptimized(
   cx: i32,
   cy: i32,
   flourMap: Map<string, i32>,
-  totalFlours: i32,
   goalPosition: ExtendedPlacementConfig
 ): i32 {
   // 初始值設為 Manhattan 距離（起點到目標）
@@ -742,7 +729,6 @@ export function heuristicOptimized(
     (Math.abs(goalPosition.x - cx) + Math.abs(goalPosition.y - cy))
   );
 
-  // AssemblyScript中使用for循環遍歷Map
   const keys = flourMap.keys();
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
@@ -759,49 +745,55 @@ export function heuristicOptimized(
   return minDist;
 }
 
-
-// assembly/index.ts 中添加一个新函数
-
-// 接收简单格式编码的字符串
-export function findSolutionPathSimple(encodedMap: string, width: i32, height: i32, encodedPlacements: string): StaticArray<i32>[] {
-  // 解析地图数据
+export function findSolutionPathSimple(
+  encodedMap: string,
+  width: i32,
+  height: i32,
+  encodedPlacements: string
+): StaticArray<i32>[] {
+  // 將傳入的 encodedMap 字串復原
+  // 不直接傳入複雜物件，是因為 AssemblyScript
+  // 不支援陣列物件，故先轉換成字串
   const rows = encodedMap.split("|");
   const gameMap: string[][] = [];
-  
+
   for (let i = 0; i < rows.length; i++) {
-    if (rows[i].length > 0) { // 确保不是空行
+    if (rows[i].length > 0) {
       gameMap.push(rows[i].split(","));
     }
   }
+  // debug use
+  // print2DStringArray(gameMap);
 
-  print2DStringArray(gameMap)
-  
-  // 解析放置数据
+  // 將傳入的 encodedPlacements 字串復原
+  // 不直接傳入複雜物件，是因為 AssemblyScript
+  // 不支援複雜物件，故先轉換成字串
   const placementRows = encodedPlacements.split("|");
   const placements: ExtendedPlacementConfig[] = [];
-  
+
   for (let i = 0; i < placementRows.length; i++) {
     if (placementRows[i].length > 0) {
       const parts = placementRows[i].split(",");
-      if (parts.length >= 3) { // 确保至少有 x,y,type
+      if (parts.length >= 3) {
+        // 确保至少有 x,y,type
         const placement = new ExtendedPlacementConfig();
         placement.x = <i32>parseInt(parts[0]);
         placement.y = <i32>parseInt(parts[1]);
         placement.type = parts[2];
-        
+
         // 添加可选字段
         if (parts.length > 3) placement.direction = parts[3];
         if (parts.length > 4) placement.isRaised = parts[4] === "true";
         if (parts.length > 5) placement.color = parts[5];
         // 其他字段根据需要添加...
-        
+
         placements.push(placement);
       }
     }
   }
-  printPlacements(placements)
+  // debug use
+  // printPlacements(placements);
 
-  
-  // 调用原始函数
+  // 轉換完後呼叫原函示
   return findSolutionPath(gameMap, width, height, placements);
 }

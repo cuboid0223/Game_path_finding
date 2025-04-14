@@ -9,1032 +9,916 @@
 import { findSolutionPath,findSolutionPathSimple } from "./build/release.js";
 const gameMap = [
     [
+        "FLOUR",
+        "",
+        "WALL",
+        "",
+        "",
         "ICE:TOP_LEFT",
         "ICE",
-        "WATER",
+        "ICE",
+        "ICE:TOP_RIGHT",
+        "WALL",
+        "",
+        "",
+        "",
         "ICE",
         "ICE",
         "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "FLOUR",
-        "WATER",
-        "ICE:TOP_RIGHT"
+        "THIEF",
+        "",
+        ""
     ],
     [
+        "",
+        "",
+        "LOCK:GREEN",
+        "",
+        "",
         "ICE",
-        "ICE",
+        "ICE&FLOUR",
         "ICE",
         "ICE",
         "WALL",
+        "",
+        "TELEPORT",
+        "",
+        "ICE",
+        "ICE",
+        "ICE",
+        "THIEF",
+        "",
+        "KEY:BLUE"
+    ],
+    [
+        "SWITCH_DOOR_0",
+        "SWITCH_DOOR_0",
+        "SWITCH_DOOR_0",
+        "SWITCH_DOOR_0",
+        "SWITCH_DOOR_0",
+        "ICE",
+        "ICE",
+        "ICE&FIRE_PICKUP",
+        "ICE",
+        "WALL",
+        "",
+        "",
+        "",
+        "ICE",
+        "ICE",
+        "ICE",
+        "THIEF",
+        "",
+        ""
+    ],
+    [
+        "SWITCH_DOOR_1",
+        "SWITCH_DOOR_1",
+        "SWITCH_DOOR_1",
+        "SWITCH_DOOR_1",
+        "SWITCH_DOOR_1",
+        "ICE",
+        "ICE",
+        "ICE",
+        "ICE:BOTTOM_RIGHT",
+        "WALL",
+        "ICE",
+        "ICE",
+        "ICE",
         "WATER",
+        "WATER",
+        "WATER",
+        "CONVEYOR:RIGHT",
+        "ICE",
+        "ICE"
+    ],
+    [
+        "HERO_SPAWN&HERO_EDITING",
+        "",
+        "",
+        "SWITCH",
+        "",
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL",
+        "WALL",
         "ICE",
         "ICE",
         "ICE",
-        "ICE",
-        "LOCK:BLUE",
+        "WATER",
         "GOAL",
-        "ICE"
-    ],
-    [
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE&FLOUR",
-        "ICE",
-        "ICE",
-        "WALL",
         "WATER",
-        "ICE",
-        "ICE",
+        "CONVEYOR:RIGHT",
         "ICE",
         "ICE"
     ],
     [
-        "ICE",
-        "WALL",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE"
-    ],
-    [
-        "ICE",
-        "ICE&FLOUR",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE&KEY:BLUE",
-        "ICE",
-        "ICE",
-        "WALL",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE"
-    ],
-    [
-        "WATER",
-        "ICE",
-        "ICE",
-        "WALL",
-        "ICE",
+        "SWITCH_DOOR_0",
+        "SWITCH_DOOR_0",
+        "SWITCH_DOOR_0",
+        "SWITCH_DOOR_0",
+        "SWITCH_DOOR_0",
         "",
         "",
         "",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "WALL"
-    ],
-    [
-        "ICE",
-        "ICE",
-        "ICE",
-        "WATER",
-        "ICE",
-        "",
-        "HERO",
-        "",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "WATER"
-    ],
-    [
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "",
-        "",
-        "",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE"
-    ],
-    [
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "WATER",
-        "ICE",
-        "ICE",
-        "ICE"
-    ],
-    [
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "WATER",
-        "ICE",
-        "ICE",
-        "WALL",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE"
-    ],
-    [
-        "ICE",
-        "ICE",
-        "WATER",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "WATER",
-        "WALL"
-    ],
-    [
-        "ICE",
-        "ICE",
-        "ICE",
-        "WALL",
-        "ICE",
-        "ICE",
-        "ICE",
-        "WATER",
-        "ICE",
-        "WALL",
-        "ICE&FLOUR",
-        "ICE",
-        "ICE"
-    ],
-    [
+        "THIEF",
+        "TELEPORT",
         "ICE:BOTTOM_LEFT",
         "ICE",
+        "ICE",
+        "WATER",
+        "WATER",
+        "WATER",
+        "CONVEYOR:RIGHT",
+        "ICE",
+        "ICE&WATER_PICKUP"
+    ],
+    [
+        "SWITCH_DOOR_1",
+        "SWITCH_DOOR_1",
+        "SWITCH_DOOR_1",
+        "SWITCH_DOOR_1",
+        "SWITCH_DOOR_1",
+        "",
+        "FIRE",
+        "FIRE",
+        "FIRE",
         "WALL",
+        "SWITCH_DOOR_1",
+        "SWITCH_DOOR_1",
+        "SWITCH_DOOR_1",
+        "CONVEYOR:DOWN",
+        "CONVEYOR:DOWN",
+        "CONVEYOR:DOWN",
+        "WALL",
+        "",
+        "WALL"
+    ],
+    [
+        "",
+        "",
+        "",
+        "",
+        "SWITCH_DOOR_0",
+        "",
+        "FIRE",
+        "FIRE&KEY:GREEN",
+        "FIRE",
+        "WALL",
+        "",
+        "ICE_PICKUP",
+        "SWITCH_DOOR_1",
         "WATER",
         "WATER",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE:BOTTOM_RIGHT"
+        "WATER",
+        "",
+        "LOCK:BLUE",
+        "WALL"
+    ],
+    [
+        "",
+        "",
+        "ICE_PICKUP",
+        "",
+        "SWITCH_DOOR_0",
+        "",
+        "FIRE",
+        "FIRE",
+        "FIRE",
+        "WALL",
+        "FLOUR",
+        "",
+        "SWITCH_DOOR_1",
+        "WATER",
+        "WATER",
+        "WATER",
+        "WALL",
+        "SWITCH",
+        "FLOUR"
     ]
 ]
 const placements = [
     {
-        "x": 7,
-        "y": 7,
-        "type": "HERO"
+        "x": 1,
+        "y": 5,
+        "type": "HERO_SPAWN"
     },
     {
-        "x": 12,
-        "y": 2,
+        "x": 1,
+        "y": 5,
+        "type": "HERO_EDITING"
+    },
+    {
+        "x": 15,
+        "y": 5,
         "type": "GOAL"
     },
     {
-        "type": "LOCK",
-        "x": 11,
-        "y": 2,
-        "color": "BLUE"
-    },
-    {
-        "type": "WALL",
-        "x": 2,
-        "y": 4
-    },
-    {
-        "type": "WALL",
-        "x": 5,
-        "y": 2
-    },
-    {
-        "type": "WALL",
-        "x": 10,
-        "y": 12
-    },
-    {
-        "type": "FLOUR",
-        "x": 11,
-        "y": 1
-    },
-    {
-        "type": "WALL",
         "x": 3,
-        "y": 13
-    },
-    {
-        "type": "WALL",
-        "x": 4,
-        "y": 6
-    },
-    {
-        "type": "WALL",
-        "x": 4,
-        "y": 12
-    },
-    {
-        "type": "WALL",
-        "x": 8,
-        "y": 3
-    },
-    {
-        "type": "WALL",
-        "x": 9,
-        "y": 5
-    },
-    {
-        "type": "WALL",
-        "x": 9,
-        "y": 10
-    },
-    {
-        "type": "WALL",
-        "x": 13,
-        "y": 6
-    },
-    {
-        "type": "WALL",
-        "x": 13,
-        "y": 11
-    },
-    {
-        "type": "WATER",
-        "x": 1,
-        "y": 6
-    },
-    {
-        "type": "WATER",
-        "x": 3,
-        "y": 1
-    },
-    {
-        "type": "WATER",
-        "x": 3,
-        "y": 11
-    },
-    {
-        "type": "WATER",
-        "x": 4,
-        "y": 7
-    },
-    {
-        "type": "WATER",
-        "x": 4,
-        "y": 13
-    },
-    {
-        "type": "WATER",
-        "x": 5,
-        "y": 13
-    },
-    {
-        "type": "WATER",
-        "x": 6,
-        "y": 2
-    },
-    {
-        "type": "WATER",
-        "x": 6,
-        "y": 10
-    },
-    {
-        "type": "WATER",
-        "x": 8,
-        "y": 12
-    },
-    {
-        "type": "WATER",
-        "x": 9,
-        "y": 3
-    },
-    {
-        "type": "WATER",
-        "x": 10,
-        "y": 9
-    },
-    {
-        "type": "WATER",
-        "x": 12,
-        "y": 1
-    },
-    {
-        "type": "WATER",
-        "x": 12,
-        "y": 11
-    },
-    {
-        "type": "WATER",
-        "x": 13,
-        "y": 7
-    },
-    {
-        "type": "ICE",
-        "x": 1,
         "y": 1,
+        "type": "WALL"
+    },
+    {
+        "x": 6,
+        "y": 5,
+        "type": "WALL"
+    },
+    {
+        "x": 7,
+        "y": 5,
+        "type": "WALL"
+    },
+    {
+        "x": 8,
+        "y": 5,
+        "type": "WALL"
+    },
+    {
+        "x": 9,
+        "y": 5,
+        "type": "WALL"
+    },
+    {
+        "x": 10,
+        "y": 1,
+        "type": "WALL"
+    },
+    {
+        "x": 10,
+        "y": 2,
+        "type": "WALL"
+    },
+    {
+        "x": 10,
+        "y": 3,
+        "type": "WALL"
+    },
+    {
+        "x": 10,
+        "y": 4,
+        "type": "WALL"
+    },
+    {
+        "x": 10,
+        "y": 5,
+        "type": "WALL"
+    },
+    {
+        "x": 10,
+        "y": 7,
+        "type": "WALL"
+    },
+    {
+        "x": 10,
+        "y": 8,
+        "type": "WALL"
+    },
+    {
+        "x": 10,
+        "y": 9,
+        "type": "WALL"
+    },
+    {
+        "x": 17,
+        "y": 7,
+        "type": "WALL"
+    },
+    {
+        "x": 17,
+        "y": 9,
+        "type": "WALL"
+    },
+    {
+        "x": 19,
+        "y": 7,
+        "type": "WALL"
+    },
+    {
+        "x": 19,
+        "y": 8,
+        "type": "WALL"
+    },
+    {
+        "x": 3,
+        "y": 9,
+        "type": "ICE_PICKUP"
+    },
+    {
+        "x": 12,
+        "y": 8,
+        "type": "ICE_PICKUP"
+    },
+    {
+        "x": 6,
+        "y": 1,
+        "type": "ICE",
         "corner": "TOP_LEFT"
     },
     {
-        "type": "ICE",
-        "x": 1,
-        "y": 2
-    },
-    {
-        "type": "ICE",
-        "x": 1,
-        "y": 3
-    },
-    {
-        "type": "ICE",
-        "x": 1,
-        "y": 4
-    },
-    {
-        "type": "ICE",
-        "x": 1,
-        "y": 5
-    },
-    {
-        "type": "ICE",
-        "x": 1,
-        "y": 7
-    },
-    {
-        "type": "ICE",
-        "x": 1,
-        "y": 8
-    },
-    {
-        "type": "ICE",
-        "x": 1,
-        "y": 9
-    },
-    {
-        "type": "ICE",
-        "x": 1,
-        "y": 10
-    },
-    {
-        "type": "ICE",
-        "x": 1,
-        "y": 11
-    },
-    {
-        "type": "ICE",
-        "x": 1,
-        "y": 12
-    },
-    {
-        "type": "ICE",
-        "x": 1,
-        "y": 13,
-        "corner": "BOTTOM_LEFT"
-    },
-    {
-        "type": "ICE",
-        "x": 2,
-        "y": 1
-    },
-    {
-        "type": "ICE",
-        "x": 2,
-        "y": 2
-    },
-    {
-        "type": "ICE",
-        "x": 2,
-        "y": 3
-    },
-    {
-        "type": "ICE",
-        "x": 2,
-        "y": 6
-    },
-    {
-        "type": "ICE",
-        "x": 2,
-        "y": 7
-    },
-    {
-        "type": "ICE",
-        "x": 2,
-        "y": 8
-    },
-    {
-        "type": "ICE",
-        "x": 2,
-        "y": 9
-    },
-    {
-        "type": "ICE",
-        "x": 2,
-        "y": 10
-    },
-    {
-        "type": "ICE",
-        "x": 2,
-        "y": 11
-    },
-    {
-        "type": "ICE",
-        "x": 2,
-        "y": 12
-    },
-    {
-        "type": "ICE",
-        "x": 2,
-        "y": 13
-    },
-    {
-        "type": "ICE",
-        "x": 3,
-        "y": 2
-    },
-    {
-        "type": "ICE",
-        "x": 3,
-        "y": 3
-    },
-    {
-        "type": "ICE",
-        "x": 3,
-        "y": 4
-    },
-    {
-        "type": "ICE",
-        "x": 3,
-        "y": 5
-    },
-    {
-        "type": "ICE",
-        "x": 3,
-        "y": 6
-    },
-    {
-        "type": "ICE",
-        "x": 3,
-        "y": 7
-    },
-    {
-        "type": "ICE",
-        "x": 3,
-        "y": 8
-    },
-    {
-        "type": "ICE",
-        "x": 3,
-        "y": 9
-    },
-    {
-        "type": "ICE",
-        "x": 3,
-        "y": 10
-    },
-    {
-        "type": "ICE",
-        "x": 3,
-        "y": 12
-    },
-    {
-        "type": "ICE",
-        "x": 4,
-        "y": 1
-    },
-    {
-        "type": "ICE",
-        "x": 4,
-        "y": 2
-    },
-    {
-        "type": "ICE",
-        "x": 4,
-        "y": 3
-    },
-    {
-        "type": "ICE",
-        "x": 4,
-        "y": 4
-    },
-    {
-        "type": "ICE",
-        "x": 4,
-        "y": 8
-    },
-    {
-        "type": "ICE",
-        "x": 4,
-        "y": 9
-    },
-    {
-        "type": "ICE",
-        "x": 4,
-        "y": 10
-    },
-    {
-        "type": "ICE",
-        "x": 4,
-        "y": 11
-    },
-    {
-        "type": "ICE",
-        "x": 5,
-        "y": 1
-    },
-    {
-        "type": "ICE",
-        "x": 5,
-        "y": 6
-    },
-    {
-        "type": "ICE",
-        "x": 5,
-        "y": 7
-    },
-    {
-        "type": "ICE",
-        "x": 5,
-        "y": 8
-    },
-    {
-        "type": "ICE",
-        "x": 5,
-        "y": 9
-    },
-    {
-        "type": "ICE",
-        "x": 5,
-        "y": 10
-    },
-    {
-        "type": "ICE",
-        "x": 5,
-        "y": 11
-    },
-    {
-        "type": "ICE",
-        "x": 5,
-        "y": 12
-    },
-    {
-        "type": "ICE",
         "x": 6,
-        "y": 1
+        "y": 2,
+        "type": "ICE"
     },
     {
-        "type": "ICE",
         "x": 6,
-        "y": 3
+        "y": 3,
+        "type": "ICE"
     },
     {
-        "type": "ICE",
         "x": 6,
-        "y": 4
+        "y": 4,
+        "type": "ICE"
     },
     {
-        "type": "ICE",
-        "x": 6,
-        "y": 9
-    },
-    {
-        "type": "ICE",
-        "x": 6,
-        "y": 11
-    },
-    {
-        "type": "ICE",
-        "x": 6,
-        "y": 12
-    },
-    {
-        "type": "ICE",
-        "x": 6,
-        "y": 13
-    },
-    {
-        "type": "ICE",
         "x": 7,
-        "y": 1
-    },
-    {
-        "type": "ICE",
-        "x": 7,
-        "y": 2
-    },
-    {
-        "type": "ICE",
-        "x": 7,
-        "y": 3
-    },
-    {
-        "type": "ICE",
-        "x": 7,
-        "y": 4
-    },
-    {
-        "type": "ICE",
-        "x": 7,
-        "y": 5
-    },
-    {
-        "type": "ICE",
-        "x": 7,
-        "y": 9
-    },
-    {
-        "type": "ICE",
-        "x": 7,
-        "y": 10
-    },
-    {
-        "type": "ICE",
-        "x": 7,
-        "y": 11
-    },
-    {
-        "type": "ICE",
-        "x": 7,
-        "y": 12
-    },
-    {
-        "type": "ICE",
-        "x": 7,
-        "y": 13
-    },
-    {
-        "type": "ICE",
-        "x": 8,
-        "y": 1
-    },
-    {
-        "type": "ICE",
-        "x": 8,
-        "y": 2
-    },
-    {
-        "type": "ICE",
-        "x": 8,
-        "y": 4
-    },
-    {
-        "type": "ICE",
-        "x": 8,
-        "y": 5
-    },
-    {
-        "type": "ICE",
-        "x": 8,
-        "y": 9
-    },
-    {
-        "type": "ICE",
-        "x": 8,
-        "y": 10
-    },
-    {
-        "type": "ICE",
-        "x": 8,
-        "y": 11
-    },
-    {
-        "type": "ICE",
-        "x": 8,
-        "y": 13
-    },
-    {
-        "type": "ICE",
-        "x": 9,
-        "y": 1
-    },
-    {
-        "type": "ICE",
-        "x": 9,
-        "y": 2
-    },
-    {
-        "type": "ICE",
-        "x": 9,
-        "y": 4
-    },
-    {
-        "type": "ICE",
-        "x": 9,
-        "y": 6
-    },
-    {
-        "type": "ICE",
-        "x": 9,
-        "y": 7
-    },
-    {
-        "type": "ICE",
-        "x": 9,
-        "y": 8
-    },
-    {
-        "type": "ICE",
-        "x": 9,
-        "y": 9
-    },
-    {
-        "type": "ICE",
-        "x": 9,
-        "y": 11
-    },
-    {
-        "type": "ICE",
-        "x": 9,
-        "y": 12
-    },
-    {
-        "type": "ICE",
-        "x": 9,
-        "y": 13
-    },
-    {
-        "type": "ICE",
-        "x": 10,
-        "y": 1
-    },
-    {
-        "type": "ICE",
-        "x": 10,
-        "y": 2
-    },
-    {
-        "type": "ICE",
-        "x": 10,
-        "y": 3
-    },
-    {
-        "type": "ICE",
-        "x": 10,
-        "y": 4
-    },
-    {
-        "type": "ICE",
-        "x": 10,
-        "y": 5
-    },
-    {
-        "type": "ICE",
-        "x": 10,
-        "y": 6
-    },
-    {
-        "type": "ICE",
-        "x": 10,
-        "y": 7
-    },
-    {
-        "type": "ICE",
-        "x": 10,
-        "y": 8
-    },
-    {
-        "type": "ICE",
-        "x": 10,
-        "y": 10
-    },
-    {
-        "type": "ICE",
-        "x": 10,
-        "y": 11
-    },
-    {
-        "type": "ICE",
-        "x": 10,
-        "y": 13
-    },
-    {
-        "type": "ICE",
-        "x": 11,
-        "y": 3
-    },
-    {
-        "type": "ICE",
-        "x": 11,
-        "y": 4
-    },
-    {
-        "type": "ICE",
-        "x": 11,
-        "y": 5
-    },
-    {
-        "type": "ICE",
-        "x": 11,
-        "y": 6
-    },
-    {
-        "type": "ICE",
-        "x": 11,
-        "y": 7
-    },
-    {
-        "type": "ICE",
-        "x": 11,
-        "y": 8
-    },
-    {
-        "type": "ICE",
-        "x": 11,
-        "y": 9
-    },
-    {
-        "type": "ICE",
-        "x": 11,
-        "y": 10
-    },
-    {
-        "type": "ICE",
-        "x": 11,
-        "y": 11
-    },
-    {
-        "type": "ICE",
-        "x": 11,
-        "y": 13
-    },
-    {
-        "type": "ICE",
-        "x": 12,
-        "y": 3
-    },
-    {
-        "type": "ICE",
-        "x": 12,
-        "y": 4
-    },
-    {
-        "type": "ICE",
-        "x": 12,
-        "y": 5
-    },
-    {
-        "type": "ICE",
-        "x": 12,
-        "y": 6
-    },
-    {
-        "type": "ICE",
-        "x": 12,
-        "y": 7
-    },
-    {
-        "type": "ICE",
-        "x": 12,
-        "y": 8
-    },
-    {
-        "type": "ICE",
-        "x": 12,
-        "y": 9
-    },
-    {
-        "type": "ICE",
-        "x": 12,
-        "y": 10
-    },
-    {
-        "type": "ICE",
-        "x": 12,
-        "y": 12
-    },
-    {
-        "type": "ICE",
-        "x": 12,
-        "y": 13
-    },
-    {
-        "type": "ICE",
-        "x": 13,
         "y": 1,
+        "type": "ICE"
+    },
+    {
+        "x": 7,
+        "y": 2,
+        "type": "ICE"
+    },
+    {
+        "x": 7,
+        "y": 3,
+        "type": "ICE"
+    },
+    {
+        "x": 7,
+        "y": 4,
+        "type": "ICE"
+    },
+    {
+        "x": 8,
+        "y": 1,
+        "type": "ICE"
+    },
+    {
+        "x": 8,
+        "y": 2,
+        "type": "ICE"
+    },
+    {
+        "x": 8,
+        "y": 3,
+        "type": "ICE"
+    },
+    {
+        "x": 8,
+        "y": 4,
+        "type": "ICE"
+    },
+    {
+        "x": 9,
+        "y": 1,
+        "type": "ICE",
         "corner": "TOP_RIGHT"
     },
     {
-        "type": "ICE",
-        "x": 13,
-        "y": 2
+        "x": 9,
+        "y": 2,
+        "type": "ICE"
     },
     {
-        "type": "ICE",
-        "x": 13,
-        "y": 3
+        "x": 9,
+        "y": 3,
+        "type": "ICE"
     },
     {
+        "x": 9,
+        "y": 4,
         "type": "ICE",
-        "x": 13,
-        "y": 4
-    },
-    {
-        "type": "ICE",
-        "x": 13,
-        "y": 5
-    },
-    {
-        "type": "ICE",
-        "x": 13,
-        "y": 8
-    },
-    {
-        "type": "ICE",
-        "x": 13,
-        "y": 9
-    },
-    {
-        "type": "ICE",
-        "x": 13,
-        "y": 10
-    },
-    {
-        "type": "ICE",
-        "x": 13,
-        "y": 12
-    },
-    {
-        "type": "ICE",
-        "x": 13,
-        "y": 13,
         "corner": "BOTTOM_RIGHT"
     },
     {
-        "type": "ICE",
-        "x": 2,
-        "y": 5
+        "x": 11,
+        "y": 4,
+        "type": "ICE"
     },
     {
-        "type": "FLOUR",
-        "x": 2,
-        "y": 5
-    },
-    {
-        "type": "ICE",
-        "x": 5,
-        "y": 4
-    },
-    {
-        "type": "ICE",
-        "x": 5,
-        "y": 5
-    },
-    {
-        "type": "ICE",
-        "x": 4,
-        "y": 5
-    },
-    {
-        "type": "ICE",
-        "x": 6,
-        "y": 5
-    },
-    {
-        "type": "KEY",
-        "x": 6,
+        "x": 11,
         "y": 5,
+        "type": "ICE"
+    },
+    {
+        "x": 11,
+        "y": 6,
+        "type": "ICE",
+        "corner": "BOTTOM_LEFT"
+    },
+    {
+        "x": 12,
+        "y": 4,
+        "type": "ICE"
+    },
+    {
+        "x": 12,
+        "y": 5,
+        "type": "ICE"
+    },
+    {
+        "x": 12,
+        "y": 6,
+        "type": "ICE"
+    },
+    {
+        "x": 13,
+        "y": 4,
+        "type": "ICE"
+    },
+    {
+        "x": 13,
+        "y": 5,
+        "type": "ICE"
+    },
+    {
+        "x": 13,
+        "y": 6,
+        "type": "ICE"
+    },
+    {
+        "x": 14,
+        "y": 1,
+        "type": "ICE"
+    },
+    {
+        "x": 14,
+        "y": 2,
+        "type": "ICE"
+    },
+    {
+        "x": 14,
+        "y": 3,
+        "type": "ICE"
+    },
+    {
+        "x": 15,
+        "y": 1,
+        "type": "ICE"
+    },
+    {
+        "x": 15,
+        "y": 2,
+        "type": "ICE"
+    },
+    {
+        "x": 15,
+        "y": 3,
+        "type": "ICE"
+    },
+    {
+        "x": 16,
+        "y": 1,
+        "type": "ICE"
+    },
+    {
+        "x": 16,
+        "y": 2,
+        "type": "ICE"
+    },
+    {
+        "x": 16,
+        "y": 3,
+        "type": "ICE"
+    },
+    {
+        "x": 18,
+        "y": 4,
+        "type": "ICE"
+    },
+    {
+        "x": 18,
+        "y": 5,
+        "type": "ICE"
+    },
+    {
+        "x": 18,
+        "y": 6,
+        "type": "ICE"
+    },
+    {
+        "x": 19,
+        "y": 4,
+        "type": "ICE"
+    },
+    {
+        "x": 19,
+        "y": 5,
+        "type": "ICE"
+    },
+    {
+        "x": 19,
+        "y": 6,
+        "type": "ICE"
+    },
+    {
+        "x": 8,
+        "y": 3,
+        "type": "FIRE_PICKUP"
+    },
+    {
+        "x": 7,
+        "y": 7,
+        "type": "FIRE"
+    },
+    {
+        "x": 7,
+        "y": 8,
+        "type": "FIRE"
+    },
+    {
+        "x": 7,
+        "y": 9,
+        "type": "FIRE"
+    },
+    {
+        "x": 8,
+        "y": 7,
+        "type": "FIRE"
+    },
+    {
+        "x": 8,
+        "y": 8,
+        "type": "FIRE"
+    },
+    {
+        "x": 8,
+        "y": 9,
+        "type": "FIRE"
+    },
+    {
+        "x": 9,
+        "y": 7,
+        "type": "FIRE"
+    },
+    {
+        "x": 9,
+        "y": 8,
+        "type": "FIRE"
+    },
+    {
+        "x": 9,
+        "y": 9,
+        "type": "FIRE"
+    },
+    {
+        "x": 19,
+        "y": 6,
+        "type": "WATER_PICKUP"
+    },
+    {
+        "x": 14,
+        "y": 4,
+        "type": "WATER"
+    },
+    {
+        "x": 14,
+        "y": 5,
+        "type": "WATER"
+    },
+    {
+        "x": 14,
+        "y": 6,
+        "type": "WATER"
+    },
+    {
+        "x": 14,
+        "y": 8,
+        "type": "WATER"
+    },
+    {
+        "x": 14,
+        "y": 9,
+        "type": "WATER"
+    },
+    {
+        "x": 15,
+        "y": 4,
+        "type": "WATER"
+    },
+    {
+        "x": 15,
+        "y": 6,
+        "type": "WATER"
+    },
+    {
+        "x": 15,
+        "y": 8,
+        "type": "WATER"
+    },
+    {
+        "x": 15,
+        "y": 9,
+        "type": "WATER"
+    },
+    {
+        "x": 16,
+        "y": 4,
+        "type": "WATER"
+    },
+    {
+        "x": 16,
+        "y": 5,
+        "type": "WATER"
+    },
+    {
+        "x": 16,
+        "y": 6,
+        "type": "WATER"
+    },
+    {
+        "x": 16,
+        "y": 8,
+        "type": "WATER"
+    },
+    {
+        "x": 16,
+        "y": 9,
+        "type": "WATER"
+    },
+    {
+        "x": 10,
+        "y": 6,
+        "type": "TELEPORT"
+    },
+    {
+        "x": 12,
+        "y": 2,
+        "type": "TELEPORT"
+    },
+    {
+        "x": 9,
+        "y": 6,
+        "type": "THIEF"
+    },
+    {
+        "x": 17,
+        "y": 1,
+        "type": "THIEF"
+    },
+    {
+        "x": 17,
+        "y": 2,
+        "type": "THIEF"
+    },
+    {
+        "x": 17,
+        "y": 3,
+        "type": "THIEF"
+    },
+    {
+        "x": 1,
+        "y": 3,
+        "type": "SWITCH_DOOR",
+        "isRaised": false
+    },
+    {
+        "x": 1,
+        "y": 4,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 1,
+        "y": 6,
+        "type": "SWITCH_DOOR",
+        "isRaised": false
+    },
+    {
+        "x": 1,
+        "y": 7,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 2,
+        "y": 3,
+        "type": "SWITCH_DOOR",
+        "isRaised": false
+    },
+    {
+        "x": 2,
+        "y": 4,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 2,
+        "y": 6,
+        "type": "SWITCH_DOOR",
+        "isRaised": false
+    },
+    {
+        "x": 2,
+        "y": 7,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 3,
+        "y": 3,
+        "type": "SWITCH_DOOR",
+        "isRaised": false
+    },
+    {
+        "x": 3,
+        "y": 4,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 3,
+        "y": 6,
+        "type": "SWITCH_DOOR",
+        "isRaised": false
+    },
+    {
+        "x": 3,
+        "y": 7,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 4,
+        "y": 3,
+        "type": "SWITCH_DOOR",
+        "isRaised": false
+    },
+    {
+        "x": 4,
+        "y": 4,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 4,
+        "y": 6,
+        "type": "SWITCH_DOOR",
+        "isRaised": false
+    },
+    {
+        "x": 4,
+        "y": 7,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 5,
+        "y": 3,
+        "type": "SWITCH_DOOR",
+        "isRaised": false
+    },
+    {
+        "x": 5,
+        "y": 4,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 5,
+        "y": 6,
+        "type": "SWITCH_DOOR",
+        "isRaised": false
+    },
+    {
+        "x": 5,
+        "y": 7,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 5,
+        "y": 8,
+        "type": "SWITCH_DOOR",
+        "isRaised": false
+    },
+    {
+        "x": 5,
+        "y": 9,
+        "type": "SWITCH_DOOR",
+        "isRaised": false
+    },
+    {
+        "x": 11,
+        "y": 7,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 12,
+        "y": 7,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 13,
+        "y": 7,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 13,
+        "y": 8,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 13,
+        "y": 9,
+        "type": "SWITCH_DOOR",
+        "isRaised": true
+    },
+    {
+        "x": 4,
+        "y": 5,
+        "type": "SWITCH"
+    },
+    {
+        "x": 18,
+        "y": 9,
+        "type": "SWITCH"
+    },
+    {
+        "x": 14,
+        "y": 7,
+        "type": "CONVEYOR",
+        "direction": "DOWN"
+    },
+    {
+        "x": 15,
+        "y": 7,
+        "type": "CONVEYOR",
+        "direction": "DOWN"
+    },
+    {
+        "x": 16,
+        "y": 7,
+        "type": "CONVEYOR",
+        "direction": "DOWN"
+    },
+    {
+        "x": 17,
+        "y": 4,
+        "type": "CONVEYOR",
+        "direction": "RIGHT"
+    },
+    {
+        "x": 17,
+        "y": 5,
+        "type": "CONVEYOR",
+        "direction": "RIGHT"
+    },
+    {
+        "x": 17,
+        "y": 6,
+        "type": "CONVEYOR",
+        "direction": "RIGHT"
+    },
+    {
+        "x": 18,
+        "y": 8,
+        "type": "LOCK",
         "color": "BLUE"
     },
     {
-        "type": "ICE",
-        "x": 5,
-        "y": 3
+        "x": 19,
+        "y": 2,
+        "type": "KEY",
+        "color": "BLUE"
     },
     {
-        "type": "FLOUR",
-        "x": 5,
-        "y": 3
+        "x": 3,
+        "y": 2,
+        "type": "LOCK",
+        "color": "GREEN"
     },
     {
-        "type": "ICE",
+        "x": 8,
+        "y": 8,
+        "type": "KEY",
+        "color": "GREEN"
+    },
+    {
+        "x": 1,
+        "y": 1,
+        "type": "FLOUR"
+    },
+    {
+        "x": 7,
+        "y": 2,
+        "type": "FLOUR"
+    },
+    {
         "x": 11,
-        "y": 12
+        "y": 9,
+        "type": "FLOUR"
     },
     {
-        "type": "FLOUR",
-        "x": 11,
-        "y": 12
+        "x": 19,
+        "y": 9,
+        "type": "FLOUR"
     }
 ]
 const encodedMap = gameMap.map(row => row.join(",")).join("|");

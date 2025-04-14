@@ -109,13 +109,13 @@ export function handleIceSliding(
         }
 
         entryDirection = newDirection;
-        console.log(
-          `Hero 在 ${corner} [${nx},${ny}] 轉向至往 ${entryDirection}`
-        );
+        // console.log(
+        //   `Hero 在 ${corner} [${nx},${ny}] 轉向至往 ${entryDirection}`
+        // );
       } else {
-        console.log(
-          `Hero 在 [${nx},${ny}] 往 ${entryDirection} 被角落${corner}阻擋`
-        );
+        // console.log(
+        //   `Hero 在 [${nx},${ny}] 往 ${entryDirection} 被角落${corner}阻擋`
+        // );
         movingTrace.push([nx - dx, ny - dy]);
 
         return createIceSlidingResult(true, movingTrace, itemMask, flourMask);
@@ -253,7 +253,10 @@ function handleIceCornerBlocking(
   if (compositeState && compositeState.get("iceCorner").booleanValue) {
     let isPass = false;
     const corner = compositeState.get("iceCorner").stringValue;
-    if (compositeState.get("iceCorner").stringValue.length !== 0 && iceTileCornerBlockedMoves.has(corner)) {
+    if (
+      compositeState.get("iceCorner").stringValue.length !== 0 &&
+      iceTileCornerBlockedMoves.has(corner)
+    ) {
       const blockedMoves = iceTileCornerBlockedMoves.get(corner);
       if (blockedMoves.has(entryDirection)) {
         isPass = blockedMoves.get(entryDirection);
@@ -261,19 +264,15 @@ function handleIceCornerBlocking(
     }
 
     // 記錄是否被角落阻擋
-    const action = isPass
-      ? `進入角落${corner}`
-      : `被角落${corner}阻擋`;
+    const action = isPass ? `進入角落${corner}` : `被角落${corner}阻擋`;
 
-    console.log(
-      `Hero  在 [${nx - dx},${
-        ny - dy
-      }] 往 ${entryDirection} ${action} [${nx},${ny}]`
-    );
+    // console.log(
+    //   `Hero  在 [${nx - dx},${
+    //     ny - dy
+    //   }] 往 ${entryDirection} ${action} [${nx},${ny}]`
+    // );
 
     movingTrace.push([nx - dx, ny - dy]); // 推送回退位置
-  }else{
-    console.log(`no corner at ${nx}, ${ny}`)
   }
 
   return movingTrace;
