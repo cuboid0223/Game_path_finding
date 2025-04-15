@@ -1,961 +1,980 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <!-- ESM -->
-<script type="module" src="https://cdn.jsdelivr.net/npm/@assemblyscript/loader/index.js"></script>
-<!-- UMD -->
-<script src="https://cdn.jsdelivr.net/npm/@assemblyscript/loader/umd/index.js"></script>
-<script type="module">
-import { findSolutionPath,findSolutionPathSimple } from "./build/release.js";
-const gameMap = [
-    [
-        "FLOUR",
-        "",
-        "WALL",
-        "",
-        "",
-        "ICE:TOP_LEFT",
-        "ICE",
-        "ICE",
-        "ICE:TOP_RIGHT",
-        "WALL",
-        "",
-        "",
-        "",
-        "ICE",
-        "ICE",
-        "ICE",
-        "THIEF",
-        "",
-        ""
-    ],
-    [
-        "",
-        "",
-        "LOCK:GREEN",
-        "",
-        "",
-        "ICE",
-        "ICE&FLOUR",
-        "ICE",
-        "ICE",
-        "WALL",
-        "",
-        "TELEPORT",
-        "",
-        "ICE",
-        "ICE",
-        "ICE",
-        "THIEF",
-        "",
-        "KEY:BLUE"
-    ],
-    [
-        "SWITCH_DOOR_0",
-        "SWITCH_DOOR_0",
-        "SWITCH_DOOR_0",
-        "SWITCH_DOOR_0",
-        "SWITCH_DOOR_0",
-        "ICE",
-        "ICE",
-        "ICE&FIRE_PICKUP",
-        "ICE",
-        "WALL",
-        "",
-        "",
-        "",
-        "ICE",
-        "ICE",
-        "ICE",
-        "THIEF",
-        "",
-        ""
-    ],
-    [
-        "SWITCH_DOOR_1",
-        "SWITCH_DOOR_1",
-        "SWITCH_DOOR_1",
-        "SWITCH_DOOR_1",
-        "SWITCH_DOOR_1",
-        "ICE",
-        "ICE",
-        "ICE",
-        "ICE:BOTTOM_RIGHT",
-        "WALL",
-        "ICE",
-        "ICE",
-        "ICE",
-        "WATER",
-        "WATER",
-        "WATER",
-        "CONVEYOR:RIGHT",
-        "ICE",
-        "ICE"
-    ],
-    [
-        "HERO_SPAWN&HERO_EDITING",
-        "",
-        "",
-        "SWITCH",
-        "",
-        "WALL",
-        "WALL",
-        "WALL",
-        "WALL",
-        "WALL",
-        "ICE",
-        "ICE",
-        "ICE",
-        "WATER",
-        "GOAL",
-        "WATER",
-        "CONVEYOR:RIGHT",
-        "ICE",
-        "ICE"
-    ],
-    [
-        "SWITCH_DOOR_0",
-        "SWITCH_DOOR_0",
-        "SWITCH_DOOR_0",
-        "SWITCH_DOOR_0",
-        "SWITCH_DOOR_0",
-        "",
-        "",
-        "",
-        "THIEF",
-        "TELEPORT",
-        "ICE:BOTTOM_LEFT",
-        "ICE",
-        "ICE",
-        "WATER",
-        "WATER",
-        "WATER",
-        "CONVEYOR:RIGHT",
-        "ICE",
-        "ICE&WATER_PICKUP"
-    ],
-    [
-        "SWITCH_DOOR_1",
-        "SWITCH_DOOR_1",
-        "SWITCH_DOOR_1",
-        "SWITCH_DOOR_1",
-        "SWITCH_DOOR_1",
-        "",
-        "FIRE",
-        "FIRE",
-        "FIRE",
-        "WALL",
-        "SWITCH_DOOR_1",
-        "SWITCH_DOOR_1",
-        "SWITCH_DOOR_1",
-        "CONVEYOR:DOWN",
-        "CONVEYOR:DOWN",
-        "CONVEYOR:DOWN",
-        "WALL",
-        "",
-        "WALL"
-    ],
-    [
-        "",
-        "",
-        "",
-        "",
-        "SWITCH_DOOR_0",
-        "",
-        "FIRE",
-        "FIRE&KEY:GREEN",
-        "FIRE",
-        "WALL",
-        "",
-        "ICE_PICKUP",
-        "SWITCH_DOOR_1",
-        "WATER",
-        "WATER",
-        "WATER",
-        "",
-        "LOCK:BLUE",
-        "WALL"
-    ],
-    [
-        "",
-        "",
-        "ICE_PICKUP",
-        "",
-        "SWITCH_DOOR_0",
-        "",
-        "FIRE",
-        "FIRE",
-        "FIRE",
-        "WALL",
-        "FLOUR",
-        "",
-        "SWITCH_DOOR_1",
-        "WATER",
-        "WATER",
-        "WATER",
-        "WALL",
-        "SWITCH",
-        "FLOUR"
-    ]
-]
-const placements = [
-    {
-        "x": 1,
-        "y": 5,
-        "type": "HERO_SPAWN"
-    },
-    {
-        "x": 1,
-        "y": 5,
-        "type": "HERO_EDITING"
-    },
-    {
-        "x": 15,
-        "y": 5,
-        "type": "GOAL"
-    },
-    {
-        "x": 3,
-        "y": 1,
-        "type": "WALL"
-    },
-    {
-        "x": 6,
-        "y": 5,
-        "type": "WALL"
-    },
-    {
-        "x": 7,
-        "y": 5,
-        "type": "WALL"
-    },
-    {
-        "x": 8,
-        "y": 5,
-        "type": "WALL"
-    },
-    {
-        "x": 9,
-        "y": 5,
-        "type": "WALL"
-    },
-    {
-        "x": 10,
-        "y": 1,
-        "type": "WALL"
-    },
-    {
-        "x": 10,
-        "y": 2,
-        "type": "WALL"
-    },
-    {
-        "x": 10,
-        "y": 3,
-        "type": "WALL"
-    },
-    {
-        "x": 10,
-        "y": 4,
-        "type": "WALL"
-    },
-    {
-        "x": 10,
-        "y": 5,
-        "type": "WALL"
-    },
-    {
-        "x": 10,
-        "y": 7,
-        "type": "WALL"
-    },
-    {
-        "x": 10,
-        "y": 8,
-        "type": "WALL"
-    },
-    {
-        "x": 10,
-        "y": 9,
-        "type": "WALL"
-    },
-    {
-        "x": 17,
-        "y": 7,
-        "type": "WALL"
-    },
-    {
-        "x": 17,
-        "y": 9,
-        "type": "WALL"
-    },
-    {
-        "x": 19,
-        "y": 7,
-        "type": "WALL"
-    },
-    {
-        "x": 19,
-        "y": 8,
-        "type": "WALL"
-    },
-    {
-        "x": 3,
-        "y": 9,
-        "type": "ICE_PICKUP"
-    },
-    {
-        "x": 12,
-        "y": 8,
-        "type": "ICE_PICKUP"
-    },
-    {
-        "x": 6,
-        "y": 1,
-        "type": "ICE",
-        "corner": "TOP_LEFT"
-    },
-    {
-        "x": 6,
-        "y": 2,
-        "type": "ICE"
-    },
-    {
-        "x": 6,
-        "y": 3,
-        "type": "ICE"
-    },
-    {
-        "x": 6,
-        "y": 4,
-        "type": "ICE"
-    },
-    {
-        "x": 7,
-        "y": 1,
-        "type": "ICE"
-    },
-    {
-        "x": 7,
-        "y": 2,
-        "type": "ICE"
-    },
-    {
-        "x": 7,
-        "y": 3,
-        "type": "ICE"
-    },
-    {
-        "x": 7,
-        "y": 4,
-        "type": "ICE"
-    },
-    {
-        "x": 8,
-        "y": 1,
-        "type": "ICE"
-    },
-    {
-        "x": 8,
-        "y": 2,
-        "type": "ICE"
-    },
-    {
-        "x": 8,
-        "y": 3,
-        "type": "ICE"
-    },
-    {
-        "x": 8,
-        "y": 4,
-        "type": "ICE"
-    },
-    {
-        "x": 9,
-        "y": 1,
-        "type": "ICE",
-        "corner": "TOP_RIGHT"
-    },
-    {
-        "x": 9,
-        "y": 2,
-        "type": "ICE"
-    },
-    {
-        "x": 9,
-        "y": 3,
-        "type": "ICE"
-    },
-    {
-        "x": 9,
-        "y": 4,
-        "type": "ICE",
-        "corner": "BOTTOM_RIGHT"
-    },
-    {
-        "x": 11,
-        "y": 4,
-        "type": "ICE"
-    },
-    {
-        "x": 11,
-        "y": 5,
-        "type": "ICE"
-    },
-    {
-        "x": 11,
-        "y": 6,
-        "type": "ICE",
-        "corner": "BOTTOM_LEFT"
-    },
-    {
-        "x": 12,
-        "y": 4,
-        "type": "ICE"
-    },
-    {
-        "x": 12,
-        "y": 5,
-        "type": "ICE"
-    },
-    {
-        "x": 12,
-        "y": 6,
-        "type": "ICE"
-    },
-    {
-        "x": 13,
-        "y": 4,
-        "type": "ICE"
-    },
-    {
-        "x": 13,
-        "y": 5,
-        "type": "ICE"
-    },
-    {
-        "x": 13,
-        "y": 6,
-        "type": "ICE"
-    },
-    {
-        "x": 14,
-        "y": 1,
-        "type": "ICE"
-    },
-    {
-        "x": 14,
-        "y": 2,
-        "type": "ICE"
-    },
-    {
-        "x": 14,
-        "y": 3,
-        "type": "ICE"
-    },
-    {
-        "x": 15,
-        "y": 1,
-        "type": "ICE"
-    },
-    {
-        "x": 15,
-        "y": 2,
-        "type": "ICE"
-    },
-    {
-        "x": 15,
-        "y": 3,
-        "type": "ICE"
-    },
-    {
-        "x": 16,
-        "y": 1,
-        "type": "ICE"
-    },
-    {
-        "x": 16,
-        "y": 2,
-        "type": "ICE"
-    },
-    {
-        "x": 16,
-        "y": 3,
-        "type": "ICE"
-    },
-    {
-        "x": 18,
-        "y": 4,
-        "type": "ICE"
-    },
-    {
-        "x": 18,
-        "y": 5,
-        "type": "ICE"
-    },
-    {
-        "x": 18,
-        "y": 6,
-        "type": "ICE"
-    },
-    {
-        "x": 19,
-        "y": 4,
-        "type": "ICE"
-    },
-    {
-        "x": 19,
-        "y": 5,
-        "type": "ICE"
-    },
-    {
-        "x": 19,
-        "y": 6,
-        "type": "ICE"
-    },
-    {
-        "x": 8,
-        "y": 3,
-        "type": "FIRE_PICKUP"
-    },
-    {
-        "x": 7,
-        "y": 7,
-        "type": "FIRE"
-    },
-    {
-        "x": 7,
-        "y": 8,
-        "type": "FIRE"
-    },
-    {
-        "x": 7,
-        "y": 9,
-        "type": "FIRE"
-    },
-    {
-        "x": 8,
-        "y": 7,
-        "type": "FIRE"
-    },
-    {
-        "x": 8,
-        "y": 8,
-        "type": "FIRE"
-    },
-    {
-        "x": 8,
-        "y": 9,
-        "type": "FIRE"
-    },
-    {
-        "x": 9,
-        "y": 7,
-        "type": "FIRE"
-    },
-    {
-        "x": 9,
-        "y": 8,
-        "type": "FIRE"
-    },
-    {
-        "x": 9,
-        "y": 9,
-        "type": "FIRE"
-    },
-    {
-        "x": 19,
-        "y": 6,
-        "type": "WATER_PICKUP"
-    },
-    {
-        "x": 14,
-        "y": 4,
-        "type": "WATER"
-    },
-    {
-        "x": 14,
-        "y": 5,
-        "type": "WATER"
-    },
-    {
-        "x": 14,
-        "y": 6,
-        "type": "WATER"
-    },
-    {
-        "x": 14,
-        "y": 8,
-        "type": "WATER"
-    },
-    {
-        "x": 14,
-        "y": 9,
-        "type": "WATER"
-    },
-    {
-        "x": 15,
-        "y": 4,
-        "type": "WATER"
-    },
-    {
-        "x": 15,
-        "y": 6,
-        "type": "WATER"
-    },
-    {
-        "x": 15,
-        "y": 8,
-        "type": "WATER"
-    },
-    {
-        "x": 15,
-        "y": 9,
-        "type": "WATER"
-    },
-    {
-        "x": 16,
-        "y": 4,
-        "type": "WATER"
-    },
-    {
-        "x": 16,
-        "y": 5,
-        "type": "WATER"
-    },
-    {
-        "x": 16,
-        "y": 6,
-        "type": "WATER"
-    },
-    {
-        "x": 16,
-        "y": 8,
-        "type": "WATER"
-    },
-    {
-        "x": 16,
-        "y": 9,
-        "type": "WATER"
-    },
-    {
-        "x": 10,
-        "y": 6,
-        "type": "TELEPORT"
-    },
-    {
-        "x": 12,
-        "y": 2,
-        "type": "TELEPORT"
-    },
-    {
-        "x": 9,
-        "y": 6,
-        "type": "THIEF"
-    },
-    {
-        "x": 17,
-        "y": 1,
-        "type": "THIEF"
-    },
-    {
-        "x": 17,
-        "y": 2,
-        "type": "THIEF"
-    },
-    {
-        "x": 17,
-        "y": 3,
-        "type": "THIEF"
-    },
-    {
-        "x": 1,
-        "y": 3,
-        "type": "SWITCH_DOOR",
-        "isRaised": false
-    },
-    {
-        "x": 1,
-        "y": 4,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 1,
-        "y": 6,
-        "type": "SWITCH_DOOR",
-        "isRaised": false
-    },
-    {
-        "x": 1,
-        "y": 7,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 2,
-        "y": 3,
-        "type": "SWITCH_DOOR",
-        "isRaised": false
-    },
-    {
-        "x": 2,
-        "y": 4,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 2,
-        "y": 6,
-        "type": "SWITCH_DOOR",
-        "isRaised": false
-    },
-    {
-        "x": 2,
-        "y": 7,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 3,
-        "y": 3,
-        "type": "SWITCH_DOOR",
-        "isRaised": false
-    },
-    {
-        "x": 3,
-        "y": 4,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 3,
-        "y": 6,
-        "type": "SWITCH_DOOR",
-        "isRaised": false
-    },
-    {
-        "x": 3,
-        "y": 7,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 4,
-        "y": 3,
-        "type": "SWITCH_DOOR",
-        "isRaised": false
-    },
-    {
-        "x": 4,
-        "y": 4,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 4,
-        "y": 6,
-        "type": "SWITCH_DOOR",
-        "isRaised": false
-    },
-    {
-        "x": 4,
-        "y": 7,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 5,
-        "y": 3,
-        "type": "SWITCH_DOOR",
-        "isRaised": false
-    },
-    {
-        "x": 5,
-        "y": 4,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 5,
-        "y": 6,
-        "type": "SWITCH_DOOR",
-        "isRaised": false
-    },
-    {
-        "x": 5,
-        "y": 7,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 5,
-        "y": 8,
-        "type": "SWITCH_DOOR",
-        "isRaised": false
-    },
-    {
-        "x": 5,
-        "y": 9,
-        "type": "SWITCH_DOOR",
-        "isRaised": false
-    },
-    {
-        "x": 11,
-        "y": 7,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 12,
-        "y": 7,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 13,
-        "y": 7,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 13,
-        "y": 8,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 13,
-        "y": 9,
-        "type": "SWITCH_DOOR",
-        "isRaised": true
-    },
-    {
-        "x": 4,
-        "y": 5,
-        "type": "SWITCH"
-    },
-    {
-        "x": 18,
-        "y": 9,
-        "type": "SWITCH"
-    },
-    {
-        "x": 14,
-        "y": 7,
-        "type": "CONVEYOR",
-        "direction": "DOWN"
-    },
-    {
-        "x": 15,
-        "y": 7,
-        "type": "CONVEYOR",
-        "direction": "DOWN"
-    },
-    {
-        "x": 16,
-        "y": 7,
-        "type": "CONVEYOR",
-        "direction": "DOWN"
-    },
-    {
-        "x": 17,
-        "y": 4,
-        "type": "CONVEYOR",
-        "direction": "RIGHT"
-    },
-    {
-        "x": 17,
-        "y": 5,
-        "type": "CONVEYOR",
-        "direction": "RIGHT"
-    },
-    {
-        "x": 17,
-        "y": 6,
-        "type": "CONVEYOR",
-        "direction": "RIGHT"
-    },
-    {
-        "x": 18,
-        "y": 8,
-        "type": "LOCK",
-        "color": "BLUE"
-    },
-    {
-        "x": 19,
-        "y": 2,
-        "type": "KEY",
-        "color": "BLUE"
-    },
-    {
-        "x": 3,
-        "y": 2,
-        "type": "LOCK",
-        "color": "GREEN"
-    },
-    {
-        "x": 8,
-        "y": 8,
-        "type": "KEY",
-        "color": "GREEN"
-    },
-    {
-        "x": 1,
-        "y": 1,
-        "type": "FLOUR"
-    },
-    {
-        "x": 7,
-        "y": 2,
-        "type": "FLOUR"
-    },
-    {
-        "x": 11,
-        "y": 9,
-        "type": "FLOUR"
-    },
-    {
-        "x": 19,
-        "y": 9,
-        "type": "FLOUR"
-    }
-]
-const encodedMap = gameMap.map(row => row.join(",")).join("|");
-const encodedPlacements = placements.map(p => {
-  // 基本字段
-  let parts = [p.x, p.y, p.type];
-  
-  // 添加可选字段
-  if (p.direction) parts.push(p.direction);
-  else parts.push("");
-  
-  if (p.isRaised !== undefined) parts.push(String(p.isRaised));
-  else parts.push("");
-  
-  if (p.color) parts.push(p.color);
-  // 其他字段根据需要添加...
-  
-  return parts.join(",");
-}).join("|");
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@assemblyscript/loader/index.js"
+    ></script>
+    <!-- UMD -->
+    <script src="https://cdn.jsdelivr.net/npm/@assemblyscript/loader/umd/index.js"></script>
+    <script type="module">
+      import {
+        findSolutionPath,
+        findSolutionPathSimple,
+      } from "./build/findSolutionPath.js";
+      const gameMap = [
+        [
+          "FLOUR",
+          "",
+          "WALL",
+          "",
+          "",
+          "ICE:TOP_LEFT",
+          "ICE",
+          "ICE",
+          "ICE:TOP_RIGHT",
+          "WALL",
+          "",
+          "",
+          "",
+          "ICE",
+          "ICE",
+          "ICE",
+          "THIEF",
+          "",
+          "",
+        ],
+        [
+          "",
+          "",
+          "LOCK:GREEN",
+          "",
+          "",
+          "ICE",
+          "ICE&FLOUR",
+          "ICE",
+          "ICE",
+          "WALL",
+          "",
+          "TELEPORT",
+          "",
+          "ICE",
+          "ICE",
+          "ICE",
+          "THIEF",
+          "",
+          "KEY:BLUE",
+        ],
+        [
+          "SWITCH_DOOR_0",
+          "SWITCH_DOOR_0",
+          "SWITCH_DOOR_0",
+          "SWITCH_DOOR_0",
+          "SWITCH_DOOR_0",
+          "ICE",
+          "ICE",
+          "ICE&FIRE_PICKUP",
+          "ICE",
+          "WALL",
+          "",
+          "",
+          "",
+          "ICE",
+          "ICE",
+          "ICE",
+          "THIEF",
+          "",
+          "",
+        ],
+        [
+          "SWITCH_DOOR_1",
+          "SWITCH_DOOR_1",
+          "SWITCH_DOOR_1",
+          "SWITCH_DOOR_1",
+          "SWITCH_DOOR_1",
+          "ICE",
+          "ICE",
+          "ICE",
+          "ICE:BOTTOM_RIGHT",
+          "WALL",
+          "ICE",
+          "ICE",
+          "ICE",
+          "WATER",
+          "WATER",
+          "WATER",
+          "CONVEYOR:RIGHT",
+          "ICE",
+          "ICE",
+        ],
+        [
+          "HERO_SPAWN&HERO_EDITING",
+          "",
+          "",
+          "SWITCH",
+          "",
+          "WALL",
+          "WALL",
+          "WALL",
+          "WALL",
+          "WALL",
+          "ICE",
+          "ICE",
+          "ICE",
+          "WATER",
+          "GOAL",
+          "WATER",
+          "CONVEYOR:RIGHT",
+          "ICE",
+          "ICE",
+        ],
+        [
+          "SWITCH_DOOR_0",
+          "SWITCH_DOOR_0",
+          "SWITCH_DOOR_0",
+          "SWITCH_DOOR_0",
+          "SWITCH_DOOR_0",
+          "",
+          "",
+          "",
+          "THIEF",
+          "TELEPORT",
+          "ICE:BOTTOM_LEFT",
+          "ICE",
+          "ICE",
+          "WATER",
+          "WATER",
+          "WATER",
+          "CONVEYOR:RIGHT",
+          "ICE",
+          "ICE&WATER_PICKUP",
+        ],
+        [
+          "SWITCH_DOOR_1",
+          "SWITCH_DOOR_1",
+          "SWITCH_DOOR_1",
+          "SWITCH_DOOR_1",
+          "SWITCH_DOOR_1",
+          "",
+          "FIRE",
+          "FIRE",
+          "FIRE",
+          "WALL",
+          "SWITCH_DOOR_1",
+          "SWITCH_DOOR_1",
+          "SWITCH_DOOR_1",
+          "CONVEYOR:DOWN",
+          "CONVEYOR:DOWN",
+          "CONVEYOR:DOWN",
+          "WALL",
+          "",
+          "WALL",
+        ],
+        [
+          "",
+          "",
+          "",
+          "",
+          "SWITCH_DOOR_0",
+          "",
+          "FIRE",
+          "FIRE&KEY:GREEN",
+          "FIRE",
+          "WALL",
+          "",
+          "ICE_PICKUP",
+          "SWITCH_DOOR_1",
+          "WATER",
+          "WATER",
+          "WATER",
+          "",
+          "LOCK:BLUE",
+          "WALL",
+        ],
+        [
+          "",
+          "",
+          "ICE_PICKUP",
+          "",
+          "SWITCH_DOOR_0",
+          "",
+          "FIRE",
+          "FIRE",
+          "FIRE",
+          "WALL",
+          "FLOUR",
+          "",
+          "SWITCH_DOOR_1",
+          "WATER",
+          "WATER",
+          "WATER",
+          "WALL",
+          "SWITCH",
+          "FLOUR",
+        ],
+      ];
+      const placements = [
+        {
+          x: 1,
+          y: 5,
+          type: "HERO_SPAWN",
+        },
+        {
+          x: 1,
+          y: 5,
+          type: "HERO_EDITING",
+        },
+        {
+          x: 15,
+          y: 5,
+          type: "GOAL",
+        },
+        {
+          x: 3,
+          y: 1,
+          type: "WALL",
+        },
+        {
+          x: 6,
+          y: 5,
+          type: "WALL",
+        },
+        {
+          x: 7,
+          y: 5,
+          type: "WALL",
+        },
+        {
+          x: 8,
+          y: 5,
+          type: "WALL",
+        },
+        {
+          x: 9,
+          y: 5,
+          type: "WALL",
+        },
+        {
+          x: 10,
+          y: 1,
+          type: "WALL",
+        },
+        {
+          x: 10,
+          y: 2,
+          type: "WALL",
+        },
+        {
+          x: 10,
+          y: 3,
+          type: "WALL",
+        },
+        {
+          x: 10,
+          y: 4,
+          type: "WALL",
+        },
+        {
+          x: 10,
+          y: 5,
+          type: "WALL",
+        },
+        {
+          x: 10,
+          y: 7,
+          type: "WALL",
+        },
+        {
+          x: 10,
+          y: 8,
+          type: "WALL",
+        },
+        {
+          x: 10,
+          y: 9,
+          type: "WALL",
+        },
+        {
+          x: 17,
+          y: 7,
+          type: "WALL",
+        },
+        {
+          x: 17,
+          y: 9,
+          type: "WALL",
+        },
+        {
+          x: 19,
+          y: 7,
+          type: "WALL",
+        },
+        {
+          x: 19,
+          y: 8,
+          type: "WALL",
+        },
+        {
+          x: 3,
+          y: 9,
+          type: "ICE_PICKUP",
+        },
+        {
+          x: 12,
+          y: 8,
+          type: "ICE_PICKUP",
+        },
+        {
+          x: 6,
+          y: 1,
+          type: "ICE",
+          corner: "TOP_LEFT",
+        },
+        {
+          x: 6,
+          y: 2,
+          type: "ICE",
+        },
+        {
+          x: 6,
+          y: 3,
+          type: "ICE",
+        },
+        {
+          x: 6,
+          y: 4,
+          type: "ICE",
+        },
+        {
+          x: 7,
+          y: 1,
+          type: "ICE",
+        },
+        {
+          x: 7,
+          y: 2,
+          type: "ICE",
+        },
+        {
+          x: 7,
+          y: 3,
+          type: "ICE",
+        },
+        {
+          x: 7,
+          y: 4,
+          type: "ICE",
+        },
+        {
+          x: 8,
+          y: 1,
+          type: "ICE",
+        },
+        {
+          x: 8,
+          y: 2,
+          type: "ICE",
+        },
+        {
+          x: 8,
+          y: 3,
+          type: "ICE",
+        },
+        {
+          x: 8,
+          y: 4,
+          type: "ICE",
+        },
+        {
+          x: 9,
+          y: 1,
+          type: "ICE",
+          corner: "TOP_RIGHT",
+        },
+        {
+          x: 9,
+          y: 2,
+          type: "ICE",
+        },
+        {
+          x: 9,
+          y: 3,
+          type: "ICE",
+        },
+        {
+          x: 9,
+          y: 4,
+          type: "ICE",
+          corner: "BOTTOM_RIGHT",
+        },
+        {
+          x: 11,
+          y: 4,
+          type: "ICE",
+        },
+        {
+          x: 11,
+          y: 5,
+          type: "ICE",
+        },
+        {
+          x: 11,
+          y: 6,
+          type: "ICE",
+          corner: "BOTTOM_LEFT",
+        },
+        {
+          x: 12,
+          y: 4,
+          type: "ICE",
+        },
+        {
+          x: 12,
+          y: 5,
+          type: "ICE",
+        },
+        {
+          x: 12,
+          y: 6,
+          type: "ICE",
+        },
+        {
+          x: 13,
+          y: 4,
+          type: "ICE",
+        },
+        {
+          x: 13,
+          y: 5,
+          type: "ICE",
+        },
+        {
+          x: 13,
+          y: 6,
+          type: "ICE",
+        },
+        {
+          x: 14,
+          y: 1,
+          type: "ICE",
+        },
+        {
+          x: 14,
+          y: 2,
+          type: "ICE",
+        },
+        {
+          x: 14,
+          y: 3,
+          type: "ICE",
+        },
+        {
+          x: 15,
+          y: 1,
+          type: "ICE",
+        },
+        {
+          x: 15,
+          y: 2,
+          type: "ICE",
+        },
+        {
+          x: 15,
+          y: 3,
+          type: "ICE",
+        },
+        {
+          x: 16,
+          y: 1,
+          type: "ICE",
+        },
+        {
+          x: 16,
+          y: 2,
+          type: "ICE",
+        },
+        {
+          x: 16,
+          y: 3,
+          type: "ICE",
+        },
+        {
+          x: 18,
+          y: 4,
+          type: "ICE",
+        },
+        {
+          x: 18,
+          y: 5,
+          type: "ICE",
+        },
+        {
+          x: 18,
+          y: 6,
+          type: "ICE",
+        },
+        {
+          x: 19,
+          y: 4,
+          type: "ICE",
+        },
+        {
+          x: 19,
+          y: 5,
+          type: "ICE",
+        },
+        {
+          x: 19,
+          y: 6,
+          type: "ICE",
+        },
+        {
+          x: 8,
+          y: 3,
+          type: "FIRE_PICKUP",
+        },
+        {
+          x: 7,
+          y: 7,
+          type: "FIRE",
+        },
+        {
+          x: 7,
+          y: 8,
+          type: "FIRE",
+        },
+        {
+          x: 7,
+          y: 9,
+          type: "FIRE",
+        },
+        {
+          x: 8,
+          y: 7,
+          type: "FIRE",
+        },
+        {
+          x: 8,
+          y: 8,
+          type: "FIRE",
+        },
+        {
+          x: 8,
+          y: 9,
+          type: "FIRE",
+        },
+        {
+          x: 9,
+          y: 7,
+          type: "FIRE",
+        },
+        {
+          x: 9,
+          y: 8,
+          type: "FIRE",
+        },
+        {
+          x: 9,
+          y: 9,
+          type: "FIRE",
+        },
+        {
+          x: 19,
+          y: 6,
+          type: "WATER_PICKUP",
+        },
+        {
+          x: 14,
+          y: 4,
+          type: "WATER",
+        },
+        {
+          x: 14,
+          y: 5,
+          type: "WATER",
+        },
+        {
+          x: 14,
+          y: 6,
+          type: "WATER",
+        },
+        {
+          x: 14,
+          y: 8,
+          type: "WATER",
+        },
+        {
+          x: 14,
+          y: 9,
+          type: "WATER",
+        },
+        {
+          x: 15,
+          y: 4,
+          type: "WATER",
+        },
+        {
+          x: 15,
+          y: 6,
+          type: "WATER",
+        },
+        {
+          x: 15,
+          y: 8,
+          type: "WATER",
+        },
+        {
+          x: 15,
+          y: 9,
+          type: "WATER",
+        },
+        {
+          x: 16,
+          y: 4,
+          type: "WATER",
+        },
+        {
+          x: 16,
+          y: 5,
+          type: "WATER",
+        },
+        {
+          x: 16,
+          y: 6,
+          type: "WATER",
+        },
+        {
+          x: 16,
+          y: 8,
+          type: "WATER",
+        },
+        {
+          x: 16,
+          y: 9,
+          type: "WATER",
+        },
+        {
+          x: 10,
+          y: 6,
+          type: "TELEPORT",
+        },
+        {
+          x: 12,
+          y: 2,
+          type: "TELEPORT",
+        },
+        {
+          x: 9,
+          y: 6,
+          type: "THIEF",
+        },
+        {
+          x: 17,
+          y: 1,
+          type: "THIEF",
+        },
+        {
+          x: 17,
+          y: 2,
+          type: "THIEF",
+        },
+        {
+          x: 17,
+          y: 3,
+          type: "THIEF",
+        },
+        {
+          x: 1,
+          y: 3,
+          type: "SWITCH_DOOR",
+          isRaised: false,
+        },
+        {
+          x: 1,
+          y: 4,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 1,
+          y: 6,
+          type: "SWITCH_DOOR",
+          isRaised: false,
+        },
+        {
+          x: 1,
+          y: 7,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 2,
+          y: 3,
+          type: "SWITCH_DOOR",
+          isRaised: false,
+        },
+        {
+          x: 2,
+          y: 4,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 2,
+          y: 6,
+          type: "SWITCH_DOOR",
+          isRaised: false,
+        },
+        {
+          x: 2,
+          y: 7,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 3,
+          y: 3,
+          type: "SWITCH_DOOR",
+          isRaised: false,
+        },
+        {
+          x: 3,
+          y: 4,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 3,
+          y: 6,
+          type: "SWITCH_DOOR",
+          isRaised: false,
+        },
+        {
+          x: 3,
+          y: 7,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 4,
+          y: 3,
+          type: "SWITCH_DOOR",
+          isRaised: false,
+        },
+        {
+          x: 4,
+          y: 4,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 4,
+          y: 6,
+          type: "SWITCH_DOOR",
+          isRaised: false,
+        },
+        {
+          x: 4,
+          y: 7,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 5,
+          y: 3,
+          type: "SWITCH_DOOR",
+          isRaised: false,
+        },
+        {
+          x: 5,
+          y: 4,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 5,
+          y: 6,
+          type: "SWITCH_DOOR",
+          isRaised: false,
+        },
+        {
+          x: 5,
+          y: 7,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 5,
+          y: 8,
+          type: "SWITCH_DOOR",
+          isRaised: false,
+        },
+        {
+          x: 5,
+          y: 9,
+          type: "SWITCH_DOOR",
+          isRaised: false,
+        },
+        {
+          x: 11,
+          y: 7,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 12,
+          y: 7,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 13,
+          y: 7,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 13,
+          y: 8,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 13,
+          y: 9,
+          type: "SWITCH_DOOR",
+          isRaised: true,
+        },
+        {
+          x: 4,
+          y: 5,
+          type: "SWITCH",
+        },
+        {
+          x: 18,
+          y: 9,
+          type: "SWITCH",
+        },
+        {
+          x: 14,
+          y: 7,
+          type: "CONVEYOR",
+          direction: "DOWN",
+        },
+        {
+          x: 15,
+          y: 7,
+          type: "CONVEYOR",
+          direction: "DOWN",
+        },
+        {
+          x: 16,
+          y: 7,
+          type: "CONVEYOR",
+          direction: "DOWN",
+        },
+        {
+          x: 17,
+          y: 4,
+          type: "CONVEYOR",
+          direction: "RIGHT",
+        },
+        {
+          x: 17,
+          y: 5,
+          type: "CONVEYOR",
+          direction: "RIGHT",
+        },
+        {
+          x: 17,
+          y: 6,
+          type: "CONVEYOR",
+          direction: "RIGHT",
+        },
+        {
+          x: 18,
+          y: 8,
+          type: "LOCK",
+          color: "BLUE",
+        },
+        {
+          x: 19,
+          y: 2,
+          type: "KEY",
+          color: "BLUE",
+        },
+        {
+          x: 3,
+          y: 2,
+          type: "LOCK",
+          color: "GREEN",
+        },
+        {
+          x: 8,
+          y: 8,
+          type: "KEY",
+          color: "GREEN",
+        },
+        {
+          x: 1,
+          y: 1,
+          type: "FLOUR",
+        },
+        {
+          x: 7,
+          y: 2,
+          type: "FLOUR",
+        },
+        {
+          x: 11,
+          y: 9,
+          type: "FLOUR",
+        },
+        {
+          x: 19,
+          y: 9,
+          type: "FLOUR",
+        },
+      ];
+      const encodedMap = gameMap.map((row) => row.join(",")).join("|");
+      const encodedPlacements = placements
+        .map((p) => {
+          // 基本字段
+          let parts = [p.x, p.y, p.type];
 
-// 调用函数
-try {
-  const width = gameMap[0].length;
-  const height = gameMap.length;
-  const solution = findSolutionPathSimple(encodedMap, width, height, encodedPlacements);
-  
-  console.log("找到解决方案:", solution);
-} catch (error) {
-  console.error("调用失败:", error);
-  // 添加调试信息
-  console.log("编码后的地图:", encodedMap);
-  console.log("编码后的放置数据:", encodedPlacements);
-}
+          // 添加可选字段
+          if (p.direction) parts.push(p.direction);
+          else parts.push("");
 
+          if (p.isRaised !== undefined) parts.push(String(p.isRaised));
+          else parts.push("");
 
+          if (p.color) parts.push(p.color);
+          // 其他字段根据需要添加...
 
-</script>
-</head>
-<body></body>
+          return parts.join(",");
+        })
+        .join("|");
+
+      // 调用函数
+      try {
+        const width = gameMap[0].length;
+        const height = gameMap.length;
+        const solution = findSolutionPathSimple(
+          encodedMap,
+          width,
+          height,
+          encodedPlacements
+        );
+
+        console.log("找到解决方案:", solution);
+      } catch (error) {
+        console.error("调用失败:", error);
+        // 添加调试信息
+        console.log("编码后的地图:", encodedMap);
+        console.log("编码后的放置数据:", encodedPlacements);
+      }
+
+      fetch("./build/findSolutionPath.wasm")
+        .then((response) => response.arrayBuffer())
+        .then((bytes) => {
+          const valid = WebAssembly.validate(bytes);
+          console.log(
+            `The given bytes are ${valid ? "" : "not "}a valid Wasm module`
+          );
+        });
+    </script>
+  </head>
+  <body></body>
 </html>

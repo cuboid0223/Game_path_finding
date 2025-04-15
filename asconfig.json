@@ -7,8 +7,8 @@
       "debug": true
     },
     "release": {
-      "outFile": "build/release.wasm",
-      "textFile": "build/release.wat",
+      "outFile": "build/findSolutionPath.wasm",
+      "textFile": "build/findSolutionPath.wat",
       "sourceMap": true,
       "optimizeLevel": 3,
       "shrinkLevel": 0,

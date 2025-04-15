@@ -129,7 +129,7 @@ export default function findSolutionPath(
   height: i32,
   placements: Array<ExtendedPlacementConfig>
 ): Array<PositionArray> {
-  console.log("開始路徑搜尋");
+  // console.log("開始路徑搜尋");
   const startPosition = findPlacement(
     placements,
     (p) =>
